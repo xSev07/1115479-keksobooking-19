@@ -1,6 +1,10 @@
 'use strict';
 
 var map = document.querySelector('.map');
+var mapPins = map.querySelector('.map__pins');
+var pinTemplate = document.querySelector('#pin')
+  .content
+  .querySelector('.map__pin');
 
 var COUNT_SIMILAR_AD = 8;
 var MAP_START_X = 0;
@@ -16,17 +20,19 @@ var MAX_GUESTS = 4;
 var MIN_FEATURES = 0;
 var MIN_PHOTOS = 0;
 var MAX_PHOTOS = 3;
+var PIN_WIDTH = 40;
+var PIN_HEIGHT = 50;
 var ENUM_TYPES = [
   'palace',
   'flat',
   'house',
   'bungalo'
-]
+];
 var ENUM_TIMES = [
   '12:00',
   '13:00',
   '14:00'
-]
+];
 var ENUM_FEATURES = [
   'wifi',
   'dishwasher',
@@ -34,7 +40,7 @@ var ENUM_FEATURES = [
   'washer',
   'elevator',
   'conditioner'
-]
+];
 
 var avatars = [];
 
@@ -80,14 +86,14 @@ function generateAddress() {
   return {
     x: getRandomNumberInRange(MAP_START_X, MAP_FINISH_X),
     y: getRandomNumberInRange(MAP_START_Y, MAP_FINISH_Y)
-  }
+  };
 }
 
 function generatePhotosArray() {
   var photos = [];
   var countPhotos = getRandomNumberInRange(MIN_PHOTOS, MAX_PHOTOS);
   for (var i = 0; i < countPhotos; i++) {
-    photos.push('http://o0.github.io/assets/images/tokyo/hotel'+ i + '.jpg')
+    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + i + '.jpg');
   }
   return photos;
 }
@@ -124,6 +130,32 @@ function fillAvatars() {
   }
 }
 
+function createSimilarAdFragment(ads) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < ads.length; i++) {
+    fragment.appendChild(renderAd(ads[i]));
+  }
+  return fragment;
+}
+
+function renderAd(ad) {
+  var pinElement = pinTemplate.cloneNode(true);
+  var pinCoordinates = calculatePinCoordinates(ad.location);
+  pinElement.style = 'left: ' + pinCoordinates.x + 'px; top: ' + pinCoordinates.y + 'px';
+  var pinImage = pinElement.querySelector('img');
+  pinImage.src = ad.author.avatar;
+  pinImage.alt = ad.offer.title;
+  return pinElement;
+}
+
+function calculatePinCoordinates(location) {
+  return {
+    x: location.x - PIN_WIDTH / 2,
+    y: location.y - PIN_HEIGHT
+  };
+}
+
 fillAvatars();
 var similarAdArray = generateSimilarAdArray();
+mapPins.appendChild(createSimilarAdFragment(similarAdArray));
 map.classList.remove('map--faded');
