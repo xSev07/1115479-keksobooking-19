@@ -1,11 +1,5 @@
 'use strict';
 
-var map = document.querySelector('.map');
-var mapPins = map.querySelector('.map__pins');
-var pinTemplate = document.querySelector('#pin')
-  .content
-  .querySelector('.map__pin');
-
 var COUNT_SIMILAR_AD = 8;
 var MAP_START_X = 0;
 var MAP_FINISH_X = map.clientWidth;
@@ -20,8 +14,8 @@ var MAX_GUESTS = 4;
 var MIN_FEATURES = 0;
 var MIN_PHOTOS = 0;
 var MAX_PHOTOS = 3;
-var PIN_WIDTH = 40;
-var PIN_HEIGHT = 50;
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
 var ENUM_TYPES = [
   'palace',
   'flat',
@@ -43,6 +37,12 @@ var ENUM_FEATURES = [
 ];
 
 var avatars = [];
+
+var map = document.querySelector('.map');
+var mapPins = map.querySelector('.map__pins');
+var pinTemplate = document.querySelector('#pin')
+  .content
+  .querySelector('.map__pin');
 
 function generateSimilarAdArray() {
   var similarAdArray = [];
