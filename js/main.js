@@ -103,6 +103,7 @@ function createSimilarAd() {
     },
     offer: {
       title: 'Не сдам, просто хвастаюсь',
+      // title: '',
       address: address.x + ', ' + address.y,
       price: getRandomNumberInRange(MIN_PRICE, MAX_PRICE),
       type: getArrayRandomElement(ENUM_TYPES),
@@ -181,29 +182,37 @@ function getFeatureClass(feature) {
 
 function renderFeatures(cardElement, ad) {
   var features = cardElement.querySelector('.popup__features');
-  var feature = features.querySelector('.popup__feature--wifi');
-  feature.classList.remove('popup__feature--wifi');
-  features.innerHTML = '';
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < ad.offer.features.length; i++) {
-    var featureElement = feature.cloneNode();
-    featureElement.classList.add(getFeatureClass(ad.offer.features[i]));
-    fragment.appendChild(featureElement);
+  if (ad.offer.features.length === 0) {
+    cardElement.removeChild(features);
+  } else {
+    var feature = features.querySelector('.popup__feature--wifi');
+    feature.classList.remove('popup__feature--wifi');
+    features.innerHTML = '';
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < ad.offer.features.length; i++) {
+      var featureElement = feature.cloneNode();
+      featureElement.classList.add(getFeatureClass(ad.offer.features[i]));
+      fragment.appendChild(featureElement);
+    }
+    features.appendChild(fragment);
   }
-  features.appendChild(fragment);
 }
 
-function renderPhotosFragment(cardElement, ad) {
+function renderPhotos(cardElement, ad) {
   var photos = cardElement.querySelector('.popup__photos');
-  var photo = cardElement.querySelector('.popup__photo');
-  var fragment = document.createDocumentFragment();
-  photos.innerHTML = '';
-  for (var i = 0; i < ad.offer.photos.length; i++) {
-    var photoElement = photo.cloneNode();
-    photoElement.src = ad.offer.photos[i];
-    fragment.appendChild(photoElement);
+  if (ad.offer.photos.length === 0) {
+    cardElement.removeChild(photos);
+  } else {
+    var photo = cardElement.querySelector('.popup__photo');
+    var fragment = document.createDocumentFragment();
+    photos.innerHTML = '';
+    for (var i = 0; i < ad.offer.photos.length; i++) {
+      var photoElement = photo.cloneNode();
+      photoElement.src = ad.offer.photos[i];
+      fragment.appendChild(photoElement);
+    }
+    photos.appendChild(fragment);
   }
-  photos.appendChild(fragment);
 }
 
 function renderCard(ad) {
@@ -216,7 +225,7 @@ function renderCard(ad) {
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
   renderFeatures(cardElement, ad);
   cardElement.querySelector('.popup__description').textContent = ad.offer.description;
-  renderPhotosFragment(cardElement, ad);
+  renderPhotos(cardElement, ad);
   cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
   mapFiltersContainer.after(cardElement);
 }
