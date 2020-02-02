@@ -49,12 +49,50 @@ var cardTemplate = document.querySelector('#card')
   .querySelector('.map__card');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 
-function generateSimilarAdArray() {
-  var similarAdArray = [];
-  for (var i = 0; i < COUNT_SIMILAR_AD; i++) {
-    similarAdArray.push(createSimilarAd());
+function getRandomNumberInRange(min, max) {
+  return Math.floor(Math.random() * (+max + 1 - +min) + +min);
+}
+
+function generateAddress() {
+  return {
+    x: getRandomNumberInRange(MAP_START_X, MAP_FINISH_X),
+    y: getRandomNumberInRange(MAP_START_Y, MAP_FINISH_Y)
+  };
+}
+
+function getArrayRandomElement(array) {
+  var randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+}
+
+function cutArrayElement(array) {
+  var element = getArrayRandomElement(array);
+  var index = array.indexOf(element);
+  array.splice(index, 1);
+  return element;
+}
+
+function getAvatar() {
+  return cutArrayElement(avatars);
+}
+
+function createFeaturesArray() {
+  var countFeatures = getRandomNumberInRange(MIN_FEATURES, ENUM_FEATURES.length);
+  var features = [];
+  var copyEnumFeatures = ENUM_FEATURES.slice();
+  for (var i = 0; i < countFeatures; i++) {
+    features.push(cutArrayElement(copyEnumFeatures));
   }
-  return similarAdArray;
+  return features;
+}
+
+function generatePhotosArray() {
+  var photos = [];
+  var countPhotos = getRandomNumberInRange(MIN_PHOTOS, MAX_PHOTOS);
+  for (var i = 1; i <= countPhotos; i++) {
+    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + i + '.jpg');
+  }
+  return photos;
 }
 
 function createSimilarAd() {
@@ -83,50 +121,12 @@ function createSimilarAd() {
   };
 }
 
-function getAvatar() {
-  return cutArrayElement(avatars);
-}
-
-function generateAddress() {
-  return {
-    x: getRandomNumberInRange(MAP_START_X, MAP_FINISH_X),
-    y: getRandomNumberInRange(MAP_START_Y, MAP_FINISH_Y)
-  };
-}
-
-function generatePhotosArray() {
-  var photos = [];
-  var countPhotos = getRandomNumberInRange(MIN_PHOTOS, MAX_PHOTOS);
-  for (var i = 1; i <= countPhotos; i++) {
-    photos.push('http://o0.github.io/assets/images/tokyo/hotel' + i + '.jpg');
+function generateSimilarAdArray() {
+  var similarAdArray = [];
+  for (var i = 0; i < COUNT_SIMILAR_AD; i++) {
+    similarAdArray.push(createSimilarAd());
   }
-  return photos;
-}
-
-function createFeaturesArray() {
-  var countFeatures = getRandomNumberInRange(MIN_FEATURES, ENUM_FEATURES.length);
-  var features = [];
-  var copyEnumFeatures = ENUM_FEATURES.slice();
-  for (var i = 0; i < countFeatures; i++) {
-    features.push(cutArrayElement(copyEnumFeatures));
-  }
-  return features;
-}
-
-function getRandomNumberInRange(min, max) {
-  return Math.floor(Math.random() * (+max - +min) + +min);
-}
-
-function cutArrayElement(array) {
-  var element = getArrayRandomElement(array);
-  var index = array.indexOf(element);
-  array.splice(index, 1);
-  return element;
-}
-
-function getArrayRandomElement(array) {
-  var randomIndex = Math.floor(Math.random() * array.length);
-  return array[randomIndex];
+  return similarAdArray;
 }
 
 function fillAvatars() {
@@ -135,12 +135,11 @@ function fillAvatars() {
   }
 }
 
-function createSimilarAdFragment(ads) {
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < ads.length; i++) {
-    fragment.appendChild(renderAd(ads[i]));
-  }
-  return fragment;
+function calculatePinCoordinates(location) {
+  return {
+    x: location.x - PIN_WIDTH / 2,
+    y: location.y - PIN_HEIGHT
+  };
 }
 
 function renderAd(ad) {
@@ -153,33 +152,48 @@ function renderAd(ad) {
   return pinElement;
 }
 
-function calculatePinCoordinates(location) {
-  return {
-    x: location.x - PIN_WIDTH / 2,
-    y: location.y - PIN_HEIGHT
-  };
+function createSimilarAdFragment(ads) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < ads.length; i++) {
+    fragment.appendChild(renderAd(ads[i]));
+  }
+  return fragment;
 }
 
 function getTypeDescription(type) {
   switch (type) {
     case 'palace':
       return 'Дворец';
-      // break;
     case 'flat':
       return 'Квартира';
-      // break;
     case 'house':
       return 'Дом';
-      // break;
     case 'bungalo':
       return 'Бунгало';
-      // break;
     default:
       return 'Не указано';
   }
 }
 
-function renderPhotos(cardElement, ad) {
+function getFeatureClass(feature) {
+  return 'popup__feature--' + feature;
+}
+
+function renderFeatures(cardElement, ad) {
+  var features = cardElement.querySelector('.popup__features');
+  var feature = features.querySelector('.popup__feature--wifi');
+  feature.classList.remove('popup__feature--wifi');
+  features.innerHTML = '';
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < ad.offer.features.length; i++) {
+    var featureElement = feature.cloneNode();
+    featureElement.classList.add(getFeatureClass(ad.offer.features[i]));
+    fragment.appendChild(featureElement);
+  }
+  features.appendChild(fragment);
+}
+
+function renderPhotosFragment(cardElement, ad) {
   var photos = cardElement.querySelector('.popup__photos');
   var photo = cardElement.querySelector('.popup__photo');
   var fragment = document.createDocumentFragment();
@@ -200,14 +214,10 @@ function renderCard(ad) {
   cardElement.querySelector('.popup__type').textContent = getTypeDescription(ad.offer.type);
   cardElement.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
-  // cardElement.querySelector('.popup__features').textContent = getTypeDescription(ad.offer.type);
+  renderFeatures(cardElement, ad);
   cardElement.querySelector('.popup__description').textContent = ad.offer.description;
-  renderPhotos(cardElement, ad);
-  // cardElement.querySelector('.popup__photo').src = ad.offer.photos[0];
-
-
+  renderPhotosFragment(cardElement, ad);
   cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
-
   mapFiltersContainer.after(cardElement);
 }
 
