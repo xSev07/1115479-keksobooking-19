@@ -37,10 +37,14 @@ var ENUM_FEATURES = [
   'elevator',
   'conditioner'
 ];
+var ENTER_KEY = 'Enter';
+var MOUSE_MAIN_BUTTON = 0;
 
 var avatars = [];
+var mapFirstInteraction = false;
 
 var mapPins = map.querySelector('.map__pins');
+var mapPinMain = map.querySelector('.map__pin--main');
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
@@ -48,6 +52,7 @@ var cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.map__card');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
+var fieldsets = document.querySelectorAll('fieldset');
 
 function getRandomNumberInRange(min, max) {
   return Math.floor(Math.random() * (+max + 1 - +min) + +min);
@@ -230,8 +235,35 @@ function renderCard(ad) {
   mapFiltersContainer.after(cardElement);
 }
 
-fillAvatars();
-var similarAdArray = generateSimilarAdArray();
-mapPins.appendChild(createSimilarAdFragment(similarAdArray));
-renderCard(similarAdArray[0]);
-map.classList.remove('map--faded');
+function setFieldsetsAvailability(availability) {
+  fieldsets.forEach(function (item) {
+    item.disabled = !availability;
+  });
+}
+
+function setFirstFieldsetsActive() {
+  if (!mapFirstInteraction) {
+    mapFirstInteraction = true;
+    setFieldsetsAvailability(true);
+  }
+}
+
+mapPinMain.addEventListener('mousedown', function (evt) {
+  if (evt.button === MOUSE_MAIN_BUTTON) {
+    setFirstFieldsetsActive();
+  }
+});
+
+mapPinMain.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    setFirstFieldsetsActive();
+  }
+});
+
+setFieldsetsAvailability(false);
+
+// fillAvatars();
+// var similarAdArray = generateSimilarAdArray();
+// mapPins.appendChild(createSimilarAdFragment(similarAdArray));
+// renderCard(similarAdArray[0]);
+// map.classList.remove('map--faded');
