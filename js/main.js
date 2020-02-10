@@ -209,8 +209,8 @@ function renderPhotos(cardElement, ad) {
     cardElement.removeChild(photos);
   } else {
     var photo = cardElement.querySelector('.popup__photo');
-    var fragment = document.createDocumentFragment();
     photos.innerHTML = '';
+    var fragment = document.createDocumentFragment();
     for (var i = 0; i < ad.offer.photos.length; i++) {
       var photoElement = photo.cloneNode();
       photoElement.src = ad.offer.photos[i];
