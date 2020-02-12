@@ -18,6 +18,9 @@ var MIN_PHOTOS = 0;
 var MAX_PHOTOS = 3;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_TAIL = 22;
 var ENUM_TYPES = [
   'palace',
   'flat',
@@ -54,6 +57,8 @@ var cardTemplate = document.querySelector('#card')
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var fieldsets = document.querySelectorAll('fieldset');
 var adForm = document.querySelector('.ad-form');
+var addressInput = adForm.querySelector('#address');
+var adFormSubmit = adForm.querySelector('.ad-form__submit');
 
 function getRandomNumberInRange(min, max) {
   return Math.floor(Math.random() * (+max + 1 - +min) + +min);
@@ -109,7 +114,6 @@ function createSimilarAd() {
     },
     offer: {
       title: 'Не сдам, просто хвастаюсь',
-      // title: '',
       address: address.x + ', ' + address.y,
       price: getRandomNumberInRange(MIN_PRICE, MAX_PRICE),
       type: getArrayRandomElement(ENUM_TYPES),
@@ -236,6 +240,30 @@ function renderCard(ad) {
   mapFiltersContainer.after(cardElement);
 }
 
+function calculateInactiveMainPinCoordinates() {
+  return {
+    x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_WIDTH / 2),
+    y: Math.round(mapPinMain.offsetTop + MAIN_PIN_HEIGHT / 2)
+  };
+}
+
+function setInactiveAddress() {
+  var location = calculateInactiveMainPinCoordinates();
+  addressInput.value = location.x + ', ' + location.y;
+}
+
+function calculateActiveMainPinCoordinates() {
+  return {
+    x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_WIDTH / 2),
+    y: Math.round(mapPinMain.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_TAIL)
+  };
+}
+
+function setActiveAddress() {
+  var location = calculateActiveMainPinCoordinates();
+  addressInput.value = location.x + ', ' + location.y;
+}
+
 function setActive() {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
@@ -256,6 +284,7 @@ function setFirstActive() {
   if (!mapFirstInteraction) {
     mapFirstInteraction = true;
     setActive();
+    setActiveAddress();
   }
 }
 
@@ -272,6 +301,30 @@ mapPinMain.addEventListener('keydown', function (evt) {
 });
 
 setInactive();
+setInactiveAddress();
+
+adFormSubmit.addEventListener('click', formValidation);
+
+
+var roomNoomberInput = adForm.querySelector('#room_number');
+var capacityInput = adForm.querySelector('#capacity');
+function formValidation() {
+  var selectedRooms = roomNoomberInput.value;
+  var selectedCapacity = capacityInput.value;
+  var errorMessage = '';
+  if ((selectedRooms === 100 & selectedCapacity > 0) || (selectedCapacity === 0 & selectedRooms !== 100)) {
+    errorMessage = 'Выбранное количество комнат не для гостей';
+  } else if (selectedRooms < selectedCapacity) {
+    errorMessage = 'Количество гостей не может быть больше количества комнат';
+  } else {
+    capacityInput.setCustomValidity('');
+  }
+  if (errorMessage != '') {
+    capacityInput.setCustomValidity(errorMessage);
+  } else {
+    capacityInput.setCustomValidity('');
+  }
+}
 
 // fillAvatars();
 // var similarAdArray = generateSimilarAdArray();
