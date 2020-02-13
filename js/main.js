@@ -59,6 +59,8 @@ var fieldsets = document.querySelectorAll('fieldset');
 var adForm = document.querySelector('.ad-form');
 var addressInput = adForm.querySelector('#address');
 var adFormSubmit = adForm.querySelector('.ad-form__submit');
+var roomNumberInput = adForm.querySelector('#room_number');
+var capacityInput = adForm.querySelector('#capacity');
 
 function getRandomNumberInRange(min, max) {
   return Math.floor(Math.random() * (+max + 1 - +min) + +min);
@@ -285,7 +287,28 @@ function setFirstActive() {
     mapFirstInteraction = true;
     setActive();
     setActiveAddress();
+    var similarAdArray = generateSimilarAdArray();
+    mapPins.appendChild(createSimilarAdFragment(similarAdArray));
+    renderCard(similarAdArray[0]);
   }
+}
+
+function validateRoomsAndCapacity() {
+  var selectedRooms = parseInt(roomNumberInput.value, 10);
+  var selectedCapacity = parseInt(capacityInput.value, 10);
+  var errorMessage = '';
+  if (selectedRooms === 100 & selectedCapacity > 0) {
+    errorMessage = 'Для выбранного количества комнат можно выбрать только "не для гостей"';
+  } else if (selectedRooms !== 100 & selectedCapacity === 0) {
+    errorMessage = 'Выбранное количество комнат не может быть "не для гостей"';
+  } else if (selectedRooms < selectedCapacity) {
+    errorMessage = 'Количество гостей не может быть больше количества комнат';
+  }
+  capacityInput.setCustomValidity(errorMessage);
+}
+
+function formValidation() {
+  validateRoomsAndCapacity();
 }
 
 mapPinMain.addEventListener('mousedown', function (evt) {
@@ -300,34 +323,10 @@ mapPinMain.addEventListener('keydown', function (evt) {
   }
 });
 
-setInactive();
-setInactiveAddress();
-
 adFormSubmit.addEventListener('click', formValidation);
 
+setInactive();
+setInactiveAddress();
+fillAvatars();
 
-var roomNoomberInput = adForm.querySelector('#room_number');
-var capacityInput = adForm.querySelector('#capacity');
-function formValidation() {
-  var selectedRooms = roomNoomberInput.value;
-  var selectedCapacity = capacityInput.value;
-  var errorMessage = '';
-  if ((selectedRooms === 100 & selectedCapacity > 0) || (selectedCapacity === 0 & selectedRooms !== 100)) {
-    errorMessage = 'Выбранное количество комнат не для гостей';
-  } else if (selectedRooms < selectedCapacity) {
-    errorMessage = 'Количество гостей не может быть больше количества комнат';
-  } else {
-    capacityInput.setCustomValidity('');
-  }
-  if (errorMessage != '') {
-    capacityInput.setCustomValidity(errorMessage);
-  } else {
-    capacityInput.setCustomValidity('');
-  }
-}
 
-// fillAvatars();
-// var similarAdArray = generateSimilarAdArray();
-// mapPins.appendChild(createSimilarAdFragment(similarAdArray));
-// renderCard(similarAdArray[0]);
-// map.classList.remove('map--faded');
