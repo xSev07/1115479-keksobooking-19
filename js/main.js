@@ -18,6 +18,9 @@ var MIN_PHOTOS = 0;
 var MAX_PHOTOS = 3;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_TAIL = 22;
 var ENUM_TYPES = [
   'palace',
   'flat',
@@ -37,10 +40,14 @@ var ENUM_FEATURES = [
   'elevator',
   'conditioner'
 ];
+var ENTER_KEY = 'Enter';
+var MOUSE_MAIN_BUTTON = 0;
 
 var avatars = [];
+var mapFirstInteraction = false;
 
 var mapPins = map.querySelector('.map__pins');
+var mapPinMain = map.querySelector('.map__pin--main');
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
@@ -48,6 +55,12 @@ var cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.map__card');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
+var fieldsets = document.querySelectorAll('fieldset');
+var adForm = document.querySelector('.ad-form');
+var addressInput = adForm.querySelector('#address');
+var adFormSubmit = adForm.querySelector('.ad-form__submit');
+var roomNumberInput = adForm.querySelector('#room_number');
+var capacityInput = adForm.querySelector('#capacity');
 
 function getRandomNumberInRange(min, max) {
   return Math.floor(Math.random() * (+max + 1 - +min) + +min);
@@ -103,7 +116,6 @@ function createSimilarAd() {
     },
     offer: {
       title: 'Не сдам, просто хвастаюсь',
-      // title: '',
       address: address.x + ', ' + address.y,
       price: getRandomNumberInRange(MIN_PRICE, MAX_PRICE),
       type: getArrayRandomElement(ENUM_TYPES),
@@ -204,8 +216,8 @@ function renderPhotos(cardElement, ad) {
     cardElement.removeChild(photos);
   } else {
     var photo = cardElement.querySelector('.popup__photo');
-    var fragment = document.createDocumentFragment();
     photos.innerHTML = '';
+    var fragment = document.createDocumentFragment();
     for (var i = 0; i < ad.offer.photos.length; i++) {
       var photoElement = photo.cloneNode();
       photoElement.src = ad.offer.photos[i];
@@ -230,8 +242,91 @@ function renderCard(ad) {
   mapFiltersContainer.after(cardElement);
 }
 
+function calculateInactiveMainPinCoordinates() {
+  return {
+    x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_WIDTH / 2),
+    y: Math.round(mapPinMain.offsetTop + MAIN_PIN_HEIGHT / 2)
+  };
+}
+
+function setInactiveAddress() {
+  var location = calculateInactiveMainPinCoordinates();
+  addressInput.value = location.x + ', ' + location.y;
+}
+
+function calculateActiveMainPinCoordinates() {
+  return {
+    x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_WIDTH / 2),
+    y: Math.round(mapPinMain.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_TAIL)
+  };
+}
+
+function setActiveAddress() {
+  var location = calculateActiveMainPinCoordinates();
+  addressInput.value = location.x + ', ' + location.y;
+}
+
+function setActive() {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  fieldsets.forEach(function (item) {
+    item.disabled = false;
+  });
+}
+
+function setInactive() {
+  map.classList.add('map--faded');
+  adForm.classList.add('ad-form--disabled');
+  fieldsets.forEach(function (item) {
+    item.disabled = true;
+  });
+}
+
+function setFirstActive() {
+  if (!mapFirstInteraction) {
+    mapFirstInteraction = true;
+    setActive();
+    setActiveAddress();
+    var similarAdArray = generateSimilarAdArray();
+    mapPins.appendChild(createSimilarAdFragment(similarAdArray));
+    renderCard(similarAdArray[0]);
+  }
+}
+
+function validateRoomsAndCapacity() {
+  var selectedRooms = parseInt(roomNumberInput.value, 10);
+  var selectedCapacity = parseInt(capacityInput.value, 10);
+  var errorMessage = '';
+  if (selectedRooms === 100 & selectedCapacity > 0) {
+    errorMessage = 'Для выбранного количества комнат можно выбрать только "не для гостей"';
+  } else if (selectedRooms !== 100 & selectedCapacity === 0) {
+    errorMessage = 'Выбранное количество комнат не может быть "не для гостей"';
+  } else if (selectedRooms < selectedCapacity) {
+    errorMessage = 'Количество гостей не может быть больше количества комнат';
+  }
+  capacityInput.setCustomValidity(errorMessage);
+}
+
+function formValidation() {
+  validateRoomsAndCapacity();
+}
+
+mapPinMain.addEventListener('mousedown', function (evt) {
+  if (evt.button === MOUSE_MAIN_BUTTON) {
+    setFirstActive();
+  }
+});
+
+mapPinMain.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    setFirstActive();
+  }
+});
+
+adFormSubmit.addEventListener('click', formValidation);
+
+setInactive();
+setInactiveAddress();
 fillAvatars();
-var similarAdArray = generateSimilarAdArray();
-mapPins.appendChild(createSimilarAdFragment(similarAdArray));
-renderCard(similarAdArray[0]);
-map.classList.remove('map--faded');
+
+
