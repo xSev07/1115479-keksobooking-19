@@ -40,11 +40,19 @@ var ENUM_FEATURES = [
   'elevator',
   'conditioner'
 ];
+
 var ENTER_KEY = 'Enter';
+var ESCAPE_KEY = 'Escape';
 var MOUSE_MAIN_BUTTON = 0;
+
+var ERROR_MESSAGE_ONLY_NOT_FOR_GUESTS = 'Для выбранного количества комнат можно выбрать только "не для гостей"';
+var ERROR_MESSAGE_NOT_FOR_GUESTS = 'Выбранное количество комнат не может быть "не для гостей"';
+var ERROR_MESSAGE_TOO_MANY_GUESTS = 'Количество гостей не может быть больше количества комнат';
 
 var avatars = [];
 var mapFirstInteraction = false;
+var similarAdArray = [];
+var openSimilarAd;
 
 var mapPins = map.querySelector('.map__pins');
 var mapPinMain = map.querySelector('.map__pin--main');
@@ -135,7 +143,6 @@ function createSimilarAd() {
 }
 
 function generateSimilarAdArray() {
-  var similarAdArray = [];
   for (var i = 0; i < COUNT_SIMILAR_AD; i++) {
     similarAdArray.push(createSimilarAd());
   }
@@ -155,8 +162,9 @@ function calculatePinCoordinates(location) {
   };
 }
 
-function renderAd(ad) {
+function renderAd(ad, index) {
   var pinElement = pinTemplate.cloneNode(true);
+  pinElement.setAttribute('data-index', index);
   var pinCoordinates = calculatePinCoordinates(ad.location);
   pinElement.style = 'left: ' + pinCoordinates.x + 'px; top: ' + pinCoordinates.y + 'px';
   var pinImage = pinElement.querySelector('img');
@@ -168,7 +176,7 @@ function renderAd(ad) {
 function createSimilarAdFragment(ads) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < ads.length; i++) {
-    fragment.appendChild(renderAd(ads[i]));
+    fragment.appendChild(renderAd(ads[i], i));
   }
   return fragment;
 }
@@ -227,7 +235,8 @@ function renderPhotos(cardElement, ad) {
   }
 }
 
-function renderCard(ad) {
+function renderCard(adIndex) {
+  var ad = similarAdArray[adIndex];
   var cardElement = cardTemplate.cloneNode(true);
   cardElement.querySelector('.popup__title').textContent = ad.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
@@ -240,6 +249,7 @@ function renderCard(ad) {
   renderPhotos(cardElement, ad);
   cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
   mapFiltersContainer.after(cardElement);
+  return cardElement;
 }
 
 function calculateInactiveMainPinCoordinates() {
@@ -287,9 +297,8 @@ function setFirstActive() {
     mapFirstInteraction = true;
     setActive();
     setActiveAddress();
-    var similarAdArray = generateSimilarAdArray();
+    similarAdArray = generateSimilarAdArray();
     mapPins.appendChild(createSimilarAdFragment(similarAdArray));
-    renderCard(similarAdArray[0]);
   }
 }
 
@@ -297,18 +306,74 @@ function validateRoomsAndCapacity() {
   var selectedRooms = parseInt(roomNumberInput.value, 10);
   var selectedCapacity = parseInt(capacityInput.value, 10);
   var errorMessage = '';
-  if (selectedRooms === 100 & selectedCapacity > 0) {
-    errorMessage = 'Для выбранного количества комнат можно выбрать только "не для гостей"';
-  } else if (selectedRooms !== 100 & selectedCapacity === 0) {
-    errorMessage = 'Выбранное количество комнат не может быть "не для гостей"';
-  } else if (selectedRooms < selectedCapacity) {
-    errorMessage = 'Количество гостей не может быть больше количества комнат';
+  switch (selectedRooms) {
+    case 100:
+      if (selectedCapacity > 0) {
+        errorMessage = ERROR_MESSAGE_ONLY_NOT_FOR_GUESTS;
+      }
+      break;
+    case 1:
+    case 2:
+    case 3:
+    default:
+      if (selectedCapacity === 0) {
+        errorMessage = ERROR_MESSAGE_NOT_FOR_GUESTS;
+      } else if (selectedRooms < selectedCapacity) {
+        errorMessage = ERROR_MESSAGE_TOO_MANY_GUESTS;
+      }
   }
+
+  // if (selectedRooms === 100 & selectedCapacity > 0) {
+  //   errorMessage = 'Для выбранного количества комнат можно выбрать только "не для гостей"';
+  // } else if (selectedRooms !== 100 & selectedCapacity === 0) {
+  //   errorMessage = 'Выбранное количество комнат не может быть "не для гостей"';
+  // } else if (selectedRooms < selectedCapacity) {
+  //   errorMessage = 'Количество гостей не может быть больше количества комнат';
+  // }
   capacityInput.setCustomValidity(errorMessage);
 }
 
 function formValidation() {
   validateRoomsAndCapacity();
+}
+
+function closeSimilarAdCard() {
+  openSimilarAd.parentNode.removeChild(openSimilarAd);
+  document.removeEventListener('keydown', onEscSimilarAdClick);
+  openSimilarAd = null;
+}
+
+function onEscSimilarAdClick(evt) {
+  if (evt.key === ESCAPE_KEY) {
+    closeSimilarAdCard();
+  }
+}
+
+function openSimilarAdCard(adIndex) {
+  if (openSimilarAd) {
+    closeSimilarAdCard();
+  }
+  openSimilarAd = renderCard(adIndex);
+  var popupClose = openSimilarAd.querySelector('.popup__close');
+  popupClose.addEventListener('click', function (evt) {
+    if (evt.button === MOUSE_MAIN_BUTTON) {
+      closeSimilarAdCard();
+    }
+  });
+  document.addEventListener('keydown', onEscSimilarAdClick);
+}
+
+function onSimilarAdClick(evt) {
+  if (evt.button === MOUSE_MAIN_BUTTON) {
+    var targetElement = evt.target;
+    if (evt.target.tagName === 'IMG') {
+      targetElement = evt.target.offsetParent;
+    }
+    if (targetElement.className === 'map__pin') {
+      var similarAdIndex = parseInt(targetElement.getAttribute('data-index'), 10);
+      openSimilarAdCard(similarAdIndex);
+    }
+  }
 }
 
 mapPinMain.addEventListener('mousedown', function (evt) {
@@ -323,10 +388,12 @@ mapPinMain.addEventListener('keydown', function (evt) {
   }
 });
 
-adFormSubmit.addEventListener('click', formValidation);
+adFormSubmit.addEventListener('click', function () {
+  formValidation();
+});
+
+mapPins.addEventListener('click', onSimilarAdClick);
 
 setInactive();
 setInactiveAddress();
 fillAvatars();
-
-
