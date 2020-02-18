@@ -69,6 +69,10 @@ var addressInput = adForm.querySelector('#address');
 var adFormSubmit = adForm.querySelector('.ad-form__submit');
 var roomNumberInput = adForm.querySelector('#room_number');
 var capacityInput = adForm.querySelector('#capacity');
+var typeInput = adForm.querySelector('#type');
+var priceInput = adForm.querySelector('#price');
+var timeInInput = adForm.querySelector('#timein');
+var timeOutInput = adForm.querySelector('#timeout');
 
 function getRandomNumberInRange(min, max) {
   return Math.floor(Math.random() * (+max + 1 - +min) + +min);
@@ -390,6 +394,31 @@ mapPinMain.addEventListener('keydown', function (evt) {
 
 adFormSubmit.addEventListener('click', function () {
   formValidation();
+});
+
+typeInput.addEventListener('change', function () {
+  var minValue = 0;
+  switch (typeInput.value) {
+    case 'flat':
+      minValue = 1000;
+      break;
+    case 'house':
+      minValue = 5000;
+      break;
+    case 'palace':
+      minValue = 10000;
+      break;
+  }
+  priceInput.setAttribute('min', minValue);
+  priceInput.setAttribute('placeholder', minValue);
+});
+
+timeInInput.addEventListener('change', function () {
+  timeOutInput.value = timeInInput.value;
+});
+
+timeOutInput.addEventListener('change', function () {
+  timeInInput.value = timeOutInput.value;
 });
 
 mapPins.addEventListener('click', onSimilarAdClick);
