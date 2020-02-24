@@ -116,17 +116,6 @@
 
   function onSimilarAdClick(evt) {
     window.util.isMouseMainButtonEvent(evt, checkSimilarAdClickTarget);
-
-    // if (evt.button === MOUSE_MAIN_BUTTON) {
-    //   var targetElement = evt.target;
-    //   if (evt.target.tagName === 'IMG') {
-    //     targetElement = evt.target.offsetParent;
-    //   }
-    //   if (targetElement.className === 'map__pin') {
-    //     var similarAdIndex = parseInt(targetElement.getAttribute('data-index'), 10);
-    //     openSimilarAdCard(similarAdIndex);
-    //   }
-    // }
   }
 
   mapPins.addEventListener('click', onSimilarAdClick);

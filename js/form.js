@@ -12,6 +12,7 @@
 
   var adForm = document.querySelector('.ad-form');
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
+  var addressInput = adForm.querySelector('#address');
   var roomNumberInput = adForm.querySelector('#room_number');
   var capacityInput = adForm.querySelector('#capacity');
   var typeInput = adForm.querySelector('#type');
@@ -39,32 +40,6 @@
           errorMessage = ERROR_MESSAGE_TOO_MANY_GUESTS;
         }
     }
-
-    typeInput.addEventListener('change', function () {
-      var minValue = MIN_PRICE_BUNGALO;
-      switch (typeInput.value) {
-        case 'flat':
-          minValue = MIN_PRICE_FLAT;
-          break;
-        case 'house':
-          minValue = MIN_PRICE_HOUSE;
-          break;
-        case 'palace':
-          minValue = MIN_PRICE_PALACE;
-          break;
-      }
-      priceInput.setAttribute('min', minValue);
-      priceInput.setAttribute('placeholder', minValue);
-    });
-
-    timeInInput.addEventListener('change', function () {
-      timeOutInput.value = timeInInput.value;
-    });
-
-    timeOutInput.addEventListener('change', function () {
-      timeInInput.value = timeOutInput.value;
-    });
-
     capacityInput.setCustomValidity(errorMessage);
   }
 
@@ -72,8 +47,36 @@
     validateRoomsAndCapacity();
   }
 
+  typeInput.addEventListener('change', function () {
+    var minValue = MIN_PRICE_BUNGALO;
+    switch (typeInput.value) {
+      case 'flat':
+        minValue = MIN_PRICE_FLAT;
+        break;
+      case 'house':
+        minValue = MIN_PRICE_HOUSE;
+        break;
+      case 'palace':
+        minValue = MIN_PRICE_PALACE;
+        break;
+    }
+    priceInput.setAttribute('min', minValue);
+    priceInput.setAttribute('placeholder', minValue);
+  });
+
+  timeInInput.addEventListener('change', function () {
+    timeOutInput.value = timeInInput.value;
+  });
+
+  timeOutInput.addEventListener('change', function () {
+    timeInInput.value = timeOutInput.value;
+  });
+
   adFormSubmit.addEventListener('click', function () {
     formValidation();
   });
 
+  adForm.addEventListener('submit', function () {
+    addressInput.removeAttribute('disabled');
+  });
 })();
