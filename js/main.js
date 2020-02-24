@@ -21,6 +21,10 @@ var PIN_HEIGHT = 70;
 var MAIN_PIN_WIDTH = 65;
 var MAIN_PIN_HEIGHT = 65;
 var MAIN_PIN_TAIL = 22;
+var MIN_PRICE_BUNGALO = 0;
+var MIN_PRICE_FLAT = 1000;
+var MIN_PRICE_HOUSE = 5000;
+var MIN_PRICE_PALACE = 10000;
 var ENUM_TYPES = [
   'palace',
   'flat',
@@ -327,13 +331,6 @@ function validateRoomsAndCapacity() {
       }
   }
 
-  // if (selectedRooms === 100 & selectedCapacity > 0) {
-  //   errorMessage = 'Для выбранного количества комнат можно выбрать только "не для гостей"';
-  // } else if (selectedRooms !== 100 & selectedCapacity === 0) {
-  //   errorMessage = 'Выбранное количество комнат не может быть "не для гостей"';
-  // } else if (selectedRooms < selectedCapacity) {
-  //   errorMessage = 'Количество гостей не может быть больше количества комнат';
-  // }
   capacityInput.setCustomValidity(errorMessage);
 }
 
@@ -397,16 +394,16 @@ adFormSubmit.addEventListener('click', function () {
 });
 
 typeInput.addEventListener('change', function () {
-  var minValue = 0;
+  var minValue = MIN_PRICE_BUNGALO;
   switch (typeInput.value) {
     case 'flat':
-      minValue = 1000;
+      minValue = MIN_PRICE_FLAT;
       break;
     case 'house':
-      minValue = 5000;
+      minValue = MIN_PRICE_HOUSE;
       break;
     case 'palace':
-      minValue = 10000;
+      minValue = MIN_PRICE_PALACE;
       break;
   }
   priceInput.setAttribute('min', minValue);
