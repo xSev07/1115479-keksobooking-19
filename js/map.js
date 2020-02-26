@@ -95,18 +95,30 @@
         y: moveEvt.clientY
       };
 
-      // var currentX = mapPinMain.offsetLeft - shift.x;
-      // var left = 0 - Math.round(MAIN_PIN_WIDTH / 2);
-      // if (currentX < left) {
-      //   currentX = left;
-      // }
-      // var right = 500;
-      // if (currentX > right) {
-      //   currentX = right;
-      // }
+      var currentX = mapPinMain.offsetLeft - shift.x;
+      var left = window.const.MAP_START_X - Math.round(MAIN_PIN_WIDTH / 2);
+      if (currentX < left) {
+        currentX = left;
+      }
+      var right = window.const.MAP_FINISH_X - Math.round(MAIN_PIN_WIDTH / 2);
+      if (currentX > right) {
+        currentX = right;
+      }
 
-      mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
-      mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+      var currentY = mapPinMain.offsetTop - shift.y;
+      var top = window.const.MAP_START_Y - Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL);
+      if (currentY < top) {
+        currentY = top;
+      }
+      var bottom = window.const.MAP_FINISH_Y - Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL);
+      if (currentY > bottom) {
+        currentY = bottom;
+      }
+
+      mapPinMain.style.top = currentY + 'px';
+      mapPinMain.style.left = currentX + 'px';
+      // mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+      // mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
       setActiveAddress();
     }
 
