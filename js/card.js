@@ -6,7 +6,7 @@
     'flat': 'Квартира',
     'house': 'Дом',
     'bungalo': 'Бунгало'
-  }
+  };
 
   var openSimilarAd;
 
