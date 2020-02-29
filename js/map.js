@@ -5,11 +5,16 @@
   var MAIN_PIN_WIDTH = 65;
   var MAIN_PIN_HEIGHT = 65;
   var MAIN_PIN_TAIL = 22;
+  var MAIN_PIN_POINTER_COORDINATES = {
+    x: Math.round(MAIN_PIN_WIDTH / 2),
+    y: Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL),
+    yCenter: MAIN_PIN_HEIGHT / 2
+  };
   var MAP_BORDER = {
-    top: window.const.MAP_START_Y - Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL),
-    right: window.const.MAP_FINISH_X - Math.round(MAIN_PIN_WIDTH / 2),
-    bottom: window.const.MAP_FINISH_Y - Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL),
-    left: window.const.MAP_START_X - Math.round(MAIN_PIN_WIDTH / 2)
+    top: window.const.MAP_START_Y - MAIN_PIN_POINTER_COORDINATES.y,
+    right: window.const.MAP_FINISH_X - MAIN_PIN_POINTER_COORDINATES.x,
+    bottom: window.const.MAP_FINISH_Y - MAIN_PIN_POINTER_COORDINATES.y,
+    left: window.const.MAP_START_X - MAIN_PIN_POINTER_COORDINATES.x
   };
 
   var mapFirstInteraction = false;
@@ -22,8 +27,8 @@
 
   function calculateInactiveMainPinCoordinates() {
     return {
-      x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_WIDTH / 2),
-      y: Math.round(mapPinMain.offsetTop + MAIN_PIN_HEIGHT / 2)
+      x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_POINTER_COORDINATES.x),
+      y: Math.round(mapPinMain.offsetTop + MAIN_PIN_POINTER_COORDINATES.yCenter)
     };
   }
 
@@ -34,8 +39,8 @@
 
   function calculateActiveMainPinCoordinates() {
     return {
-      x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_WIDTH / 2),
-      y: Math.round(mapPinMain.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_TAIL)
+      x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_POINTER_COORDINATES.x),
+      y: Math.round(mapPinMain.offsetTop + MAIN_PIN_POINTER_COORDINATES.y)
     };
   }
 
