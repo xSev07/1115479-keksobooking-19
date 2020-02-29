@@ -1,6 +1,13 @@
 'use strict';
 
 (function () {
+  var TYPE_DESCRIPTION = {
+    'palace': 'Дворец',
+    'flat': 'Квартира',
+    'house': 'Дом',
+    'bungalo': 'Бунгало'
+  };
+
   var openSimilarAd;
 
   var mapPins = document.querySelector('.map__pins');
@@ -44,21 +51,6 @@
     }
   }
 
-  function getTypeDescription(type) {
-    switch (type) {
-      case 'palace':
-        return 'Дворец';
-      case 'flat':
-        return 'Квартира';
-      case 'house':
-        return 'Дом';
-      case 'bungalo':
-        return 'Бунгало';
-      default:
-        return 'Не указано';
-    }
-  }
-
   function getFeatureClass(feature) {
     return 'popup__feature--' + feature;
   }
@@ -70,7 +62,7 @@
     cardElement.querySelector('.popup__title').textContent = ad.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
     cardElement.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
-    cardElement.querySelector('.popup__type').textContent = getTypeDescription(ad.offer.type);
+    cardElement.querySelector('.popup__type').textContent = TYPE_DESCRIPTION[ad.offer.type];
     cardElement.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
     renderFeatures(cardElement, ad);

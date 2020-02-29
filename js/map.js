@@ -5,6 +5,12 @@
   var MAIN_PIN_WIDTH = 65;
   var MAIN_PIN_HEIGHT = 65;
   var MAIN_PIN_TAIL = 22;
+  var MAP_BORDER = {
+    top: window.const.MAP_START_Y - Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL),
+    right: window.const.MAP_FINISH_X - Math.round(MAIN_PIN_WIDTH / 2),
+    bottom: window.const.MAP_FINISH_Y - Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL),
+    left: window.const.MAP_START_X - Math.round(MAIN_PIN_WIDTH / 2)
+  };
 
   var mapFirstInteraction = false;
 
@@ -58,13 +64,70 @@
     if (!mapFirstInteraction) {
       mapFirstInteraction = true;
       setActive();
-      setActiveAddress();
       window.pin.createSimilarAds();
     }
   }
 
+  function checkMapBorder(position, axis) {
+    var checkedPosition = axis === 'x' ? MAP_BORDER.left : MAP_BORDER.top;
+    if (position < checkedPosition) {
+      position = checkedPosition;
+    }
+    checkedPosition = axis === 'x' ? MAP_BORDER.right : MAP_BORDER.bottom;
+    if (position > checkedPosition) {
+      position = checkedPosition;
+    }
+    return position;
+  }
+
+  function setMouseDrag(evt) {
+    evt.preventDefault();
+
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    function onMouseMove(moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      var currentY = mapPinMain.offsetTop - shift.y;
+      mapPinMain.style.top = checkMapBorder(currentY, 'y') + 'px';
+      var currentX = mapPinMain.offsetLeft - shift.x;
+      mapPinMain.style.left = checkMapBorder(currentX, 'x') + 'px';
+
+      setActiveAddress();
+    }
+
+    function onMouseUp(upEvt) {
+      upEvt.preventDefault();
+
+      map.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    map.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    setActiveAddress();
+  }
+
+  function onMainMouseDown(evt) {
+    setFirstActive();
+    setMouseDrag(evt);
+  }
+
   mapPinMain.addEventListener('mousedown', function (evt) {
-    window.util.isMouseMainButtonEvent(evt, setFirstActive);
+    window.util.isMouseMainButtonEvent(evt, onMainMouseDown);
   });
 
   mapPinMain.addEventListener('keydown', function (evt) {
