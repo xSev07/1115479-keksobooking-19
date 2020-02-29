@@ -48,7 +48,7 @@
   }
 
   typeInput.addEventListener('change', function () {
-    var minValue = MIN_PRICE_BUNGALO;
+    var minValue;
     switch (typeInput.value) {
       case 'flat':
         minValue = MIN_PRICE_FLAT;
@@ -59,6 +59,8 @@
       case 'palace':
         minValue = MIN_PRICE_PALACE;
         break;
+      default:
+        minValue = MIN_PRICE_BUNGALO;
     }
     priceInput.setAttribute('min', minValue);
     priceInput.setAttribute('placeholder', minValue);
