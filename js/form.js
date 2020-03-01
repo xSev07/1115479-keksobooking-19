@@ -48,8 +48,11 @@
   }
 
   typeInput.addEventListener('change', function () {
-    var minValue = MIN_PRICE_BUNGALO;
+    var minValue;
     switch (typeInput.value) {
+      case 'bungalo':
+        minValue = MIN_PRICE_BUNGALO;
+        break;
       case 'flat':
         minValue = MIN_PRICE_FLAT;
         break;
@@ -59,6 +62,8 @@
       case 'palace':
         minValue = MIN_PRICE_PALACE;
         break;
+      default:
+        throw new Error('Не известный тип жилья ' + typeInput.value);
     }
     priceInput.setAttribute('min', minValue);
     priceInput.setAttribute('placeholder', minValue);

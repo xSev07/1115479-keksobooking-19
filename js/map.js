@@ -5,11 +5,16 @@
   var MAIN_PIN_WIDTH = 65;
   var MAIN_PIN_HEIGHT = 65;
   var MAIN_PIN_TAIL = 22;
+  var MAIN_PIN_POINTER_COORDINATES = {
+    x: Math.round(MAIN_PIN_WIDTH / 2),
+    y: Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL),
+    yCenter: MAIN_PIN_HEIGHT / 2
+  };
   var MAP_BORDER = {
-    top: window.const.MAP_START_Y - Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL),
-    right: window.const.MAP_FINISH_X - Math.round(MAIN_PIN_WIDTH / 2),
-    bottom: window.const.MAP_FINISH_Y - Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL),
-    left: window.const.MAP_START_X - Math.round(MAIN_PIN_WIDTH / 2)
+    top: window.const.MAP_START_Y - MAIN_PIN_POINTER_COORDINATES.y,
+    right: window.const.MAP_FINISH_X - MAIN_PIN_POINTER_COORDINATES.x,
+    bottom: window.const.MAP_FINISH_Y - MAIN_PIN_POINTER_COORDINATES.y,
+    left: window.const.MAP_START_X - MAIN_PIN_POINTER_COORDINATES.x
   };
 
   var mapFirstInteraction = false;
@@ -19,11 +24,15 @@
   var adForm = document.querySelector('.ad-form');
   var fieldsets = document.querySelectorAll('fieldset');
   var addressInput = adForm.querySelector('#address');
+  var errorTemplate = document.querySelector('#error')
+    .content
+    .querySelector('.error');
+  var main = document.querySelector('main');
 
   function calculateInactiveMainPinCoordinates() {
     return {
-      x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_WIDTH / 2),
-      y: Math.round(mapPinMain.offsetTop + MAIN_PIN_HEIGHT / 2)
+      x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_POINTER_COORDINATES.x),
+      y: Math.round(mapPinMain.offsetTop + MAIN_PIN_POINTER_COORDINATES.yCenter)
     };
   }
 
@@ -34,8 +43,8 @@
 
   function calculateActiveMainPinCoordinates() {
     return {
-      x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_WIDTH / 2),
-      y: Math.round(mapPinMain.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_TAIL)
+      x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_POINTER_COORDINATES.x),
+      y: Math.round(mapPinMain.offsetTop + MAIN_PIN_POINTER_COORDINATES.y)
     };
   }
 
@@ -60,11 +69,45 @@
     });
   }
 
+  function onSuccess(similarAdArray) {
+    mapFirstInteraction = true;
+    setActive();
+    window.pin.createSimilarAds(similarAdArray);
+  }
+
+  function onError(errorMessage) {
+    var errorElement = errorTemplate.cloneNode(true);
+    var errorButton = errorElement.querySelector('.error__button');
+    errorElement.querySelector('.error__message').textContent = errorMessage;
+
+    function errorClose() {
+      main.removeChild(errorElement);
+      document.removeEventListener('keydown', onPopupEscPress);
+    }
+
+    function onPopupEscPress(evt) {
+      window.util.isEscEvent(evt, errorClose);
+    }
+
+    errorButton.addEventListener('click', function (evt) {
+      window.util.isMouseMainButtonEvent(evt, errorClose);
+    });
+
+    errorElement.addEventListener('click', function (evt) {
+      if (evt.target.tagName === 'DIV') {
+        window.util.isMouseMainButtonEvent(evt, errorClose);
+      }
+    });
+
+    document.addEventListener('keydown', onPopupEscPress);
+
+    main.insertAdjacentElement('afterbegin', errorElement);
+
+  }
+
   function setFirstActive() {
     if (!mapFirstInteraction) {
-      mapFirstInteraction = true;
-      setActive();
-      window.pin.createSimilarAds();
+      window.backend.loadSimilarAd(onSuccess, onError);
     }
   }
 
