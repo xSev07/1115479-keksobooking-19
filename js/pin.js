@@ -35,8 +35,9 @@
     return fragment;
   }
 
-  function createSimilarAds() {
-    var fragment = createSimilarAdFragment(window.data.generateSimilarAdArray());
+  function createSimilarAds(similarAdArray) {
+    window.data.setSimilarAdArray(similarAdArray);
+    var fragment = createSimilarAdFragment(similarAdArray);
     mapPins.appendChild(fragment);
   }
 

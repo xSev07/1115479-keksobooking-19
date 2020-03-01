@@ -108,8 +108,13 @@
     return similarAdArray;
   }
 
+  function setSimilarAdArray(array) {
+    similarAdArray = array;
+  }
+
   window.data = {
     generateSimilarAdArray: generateSimilarAdArray,
-    getSimilarAdArray: getSimilarAdArray
+    getSimilarAdArray: getSimilarAdArray,
+    setSimilarAdArray: setSimilarAdArray
   };
 })();

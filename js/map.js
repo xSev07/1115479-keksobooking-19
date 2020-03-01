@@ -24,6 +24,10 @@
   var adForm = document.querySelector('.ad-form');
   var fieldsets = document.querySelectorAll('fieldset');
   var addressInput = adForm.querySelector('#address');
+  var errorTemplate = document.querySelector('#error')
+    .content
+    .querySelector('.error');
+  var main = document.querySelector('main');
 
   function calculateInactiveMainPinCoordinates() {
     return {
@@ -65,11 +69,45 @@
     });
   }
 
+  function onSuccess(similarAdArray) {
+    mapFirstInteraction = true;
+    setActive();
+    window.pin.createSimilarAds(similarAdArray);
+  }
+
+  function onError(errorMessage) {
+    var errorElement = errorTemplate.cloneNode(true);
+    var errorButton = errorElement.querySelector('.error__button');
+    errorElement.querySelector('.error__message').textContent = errorMessage;
+
+    function errorClose() {
+      main.removeChild(errorElement);
+      document.removeEventListener('keydown', onPopupEscPress);
+    }
+
+    function onPopupEscPress(evt) {
+      window.util.isEscEvent(evt, errorClose);
+    }
+
+    errorButton.addEventListener('click', function (evt) {
+      window.util.isMouseMainButtonEvent(evt, errorClose);
+    });
+
+    errorElement.addEventListener('click', function (evt) {
+      if (evt.target.tagName === 'DIV') {
+        window.util.isMouseMainButtonEvent(evt, errorClose);
+      }
+    });
+
+    document.addEventListener('keydown', onPopupEscPress);
+
+    main.insertAdjacentElement('afterbegin', errorElement);
+
+  }
+
   function setFirstActive() {
     if (!mapFirstInteraction) {
-      mapFirstInteraction = true;
-      setActive();
-      window.pin.createSimilarAds();
+      window.backend.loadSimilarAd(onSuccess, onError);
     }
   }
 
