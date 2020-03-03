@@ -81,7 +81,28 @@
     formValidation();
   });
 
-  adForm.addEventListener('submit', function () {
+  adForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
     addressInput.removeAttribute('disabled');
+    debugger;
+    window.backend.saveAd(new FormData(adForm), function (response) {
+      setInactive();
+    }, onError);
   });
+
+  /////////////////////////////
+  var map = document.querySelector('.map');
+  var fieldsets = document.querySelectorAll('fieldset');
+  function setInactive() {
+    map.classList.add('map--faded');
+    adForm.classList.add('ad-form--disabled');
+    fieldsets.forEach(function (item) {
+      item.disabled = true;
+    });
+  }
+
+  function onError(err) {
+    console.log(err);
+  }
+  ///////////////////////////////
 })();
