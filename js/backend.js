@@ -54,7 +54,7 @@
     xhr.responseType = 'json';
     xhr.timeout = TIMEOUT_IN_MS;
     xhr.open('POST', URL2);
-    xhr.send();
+    xhr.send(data);
 
   }
 

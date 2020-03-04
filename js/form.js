@@ -84,13 +84,23 @@
   adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     addressInput.removeAttribute('disabled');
-    debugger;
     window.backend.saveAd(new FormData(adForm), function (response) {
       setInactive();
+      deleteSimilarAds();
     }, onError);
   });
 
   /////////////////////////////
+  function deleteSimilarAds() {
+    window.data.setSimilarAdArray([]);
+    var pins = document.querySelectorAll('.map-pin');
+    forEach((item, i) => {
+      debugger;
+      // if (item.classList)
+    });
+
+  }
+
   var map = document.querySelector('.map');
   var fieldsets = document.querySelectorAll('fieldset');
   function setInactive() {
