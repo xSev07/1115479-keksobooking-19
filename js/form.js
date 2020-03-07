@@ -12,6 +12,7 @@
 
   var adForm = document.querySelector('.ad-form');
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
+  var adFormReset = adForm.querySelector('.ad-form__reset');
   var addressInput = adForm.querySelector('#address');
   var roomNumberInput = adForm.querySelector('#room_number');
   var capacityInput = adForm.querySelector('#capacity');
@@ -19,6 +20,9 @@
   var priceInput = adForm.querySelector('#price');
   var timeInInput = adForm.querySelector('#timein');
   var timeOutInput = adForm.querySelector('#timeout');
+  var successTemplate = document.querySelector('#success')
+    .content
+    .querySelector('.success');
 
   function validateRoomsAndCapacity() {
     var selectedRooms = parseInt(roomNumberInput.value, 10);
@@ -45,6 +49,23 @@
 
   function formValidation() {
     validateRoomsAndCapacity();
+  }
+
+  function onSuccess() {
+    var successElement = successTemplate.cloneNode(true);
+    window.control.setInactive();
+    window.control.showMessage(successElement);
+  }
+
+  function onFormSubmit(evt) {
+    evt.preventDefault();
+    addressInput.removeAttribute('disabled');
+    window.backend.saveAd(new FormData(adForm), onSuccess, window.control.onError);
+  }
+
+  function onFormReset(evt) {
+    evt.preventDefault();
+    window.control.setInactive();
   }
 
   typeInput.addEventListener('change', function () {
@@ -81,38 +102,8 @@
     formValidation();
   });
 
-  adForm.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    addressInput.removeAttribute('disabled');
-    window.backend.saveAd(new FormData(adForm), function (response) {
-      setInactive();
-      deleteSimilarAds();
-    }, onError);
+  adForm.addEventListener('submit', onFormSubmit);
+  adFormReset.addEventListener('click', function (evt) {
+    window.util.isMouseMainButtonEvent(evt, onFormReset);
   });
-
-  /////////////////////////////
-  function deleteSimilarAds() {
-    window.data.setSimilarAdArray([]);
-    var pins = document.querySelectorAll('.map-pin');
-    forEach((item, i) => {
-      debugger;
-      // if (item.classList)
-    });
-
-  }
-
-  var map = document.querySelector('.map');
-  var fieldsets = document.querySelectorAll('fieldset');
-  function setInactive() {
-    map.classList.add('map--faded');
-    adForm.classList.add('ad-form--disabled');
-    fieldsets.forEach(function (item) {
-      item.disabled = true;
-    });
-  }
-
-  function onError(err) {
-    console.log(err);
-  }
-  ///////////////////////////////
 })();

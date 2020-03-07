@@ -56,7 +56,7 @@
   }
 
   function renderCard(adIndex) {
-    var similarAdArray = window.data.getSimilarAdArray();
+    var similarAdArray = window.control.getSimilarAdArray();
     var ad = similarAdArray[adIndex];
     var cardElement = cardTemplate.cloneNode(true);
     cardElement.querySelector('.popup__title').textContent = ad.offer.title;
@@ -73,14 +73,16 @@
     return cardElement;
   }
 
-  function onEscSimilarAdClick(evt) {
-    window.util.isEscEvent(evt, closeSimilarAdCard);
+  function closeSimilarAdCard() {
+    if (openSimilarAd) {
+      openSimilarAd.parentNode.removeChild(openSimilarAd);
+      document.removeEventListener('keydown', onEscSimilarAdClick);
+      openSimilarAd = null;
+    }
   }
 
-  function closeSimilarAdCard() {
-    openSimilarAd.parentNode.removeChild(openSimilarAd);
-    document.removeEventListener('keydown', onEscSimilarAdClick);
-    openSimilarAd = null;
+  function onEscSimilarAdClick(evt) {
+    window.util.isEscEvent(evt, closeSimilarAdCard);
   }
 
   function openSimilarAdCard(adIndex) {
@@ -111,5 +113,9 @@
   }
 
   mapPins.addEventListener('click', onSimilarAdClick);
+
+  window.card = {
+    closeSimilarAdCard: closeSimilarAdCard
+  };
 
 })();
