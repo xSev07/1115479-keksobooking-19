@@ -36,12 +36,24 @@
   }
 
   function createSimilarAds(similarAdArray) {
-    window.data.setSimilarAdArray(similarAdArray);
+    window.control.setSimilarAdArray(similarAdArray);
     var fragment = createSimilarAdFragment(similarAdArray);
     mapPins.appendChild(fragment);
   }
 
+  function deleteSimilarAds() {
+    window.control.setSimilarAdArray([]);
+    var pins = mapPins.querySelectorAll('.map__pin');
+    for (var i = 0; i < pins.length; i++) {
+      if (pins[i].classList.contains('map__pin--main')) {
+        continue;
+      }
+      mapPins.removeChild(pins[i]);
+    }
+  }
+
   window.pin = {
-    createSimilarAds: createSimilarAds
+    createSimilarAds: createSimilarAds,
+    deleteSimilarAds: deleteSimilarAds
   };
 })();

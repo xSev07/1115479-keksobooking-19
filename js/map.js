@@ -1,38 +1,21 @@
 'use strict';
 
 (function () {
-
-  var MAIN_PIN_WIDTH = 65;
-  var MAIN_PIN_HEIGHT = 65;
-  var MAIN_PIN_TAIL = 22;
-  var MAIN_PIN_POINTER_COORDINATES = {
-    x: Math.round(MAIN_PIN_WIDTH / 2),
-    y: Math.round(MAIN_PIN_HEIGHT + MAIN_PIN_TAIL),
-    yCenter: MAIN_PIN_HEIGHT / 2
-  };
   var MAP_BORDER = {
-    top: window.const.MAP_START_Y - MAIN_PIN_POINTER_COORDINATES.y,
-    right: window.const.MAP_FINISH_X - MAIN_PIN_POINTER_COORDINATES.x,
-    bottom: window.const.MAP_FINISH_Y - MAIN_PIN_POINTER_COORDINATES.y,
-    left: window.const.MAP_START_X - MAIN_PIN_POINTER_COORDINATES.x
+    top: window.const.MAP_START_Y - window.const.MAIN_PIN_POINTER_COORDINATES.y,
+    right: window.const.MAP_FINISH_X - window.const.MAIN_PIN_POINTER_COORDINATES.x,
+    bottom: window.const.MAP_FINISH_Y - window.const.MAIN_PIN_POINTER_COORDINATES.y,
+    left: window.const.MAP_START_X - window.const.MAIN_PIN_POINTER_COORDINATES.x
   };
-
-  var mapFirstInteraction = false;
 
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
-  var adForm = document.querySelector('.ad-form');
-  var fieldsets = document.querySelectorAll('fieldset');
-  var addressInput = adForm.querySelector('#address');
-  var errorTemplate = document.querySelector('#error')
-    .content
-    .querySelector('.error');
-  var main = document.querySelector('main');
+  var addressInput = document.querySelector('#address');
 
   function calculateInactiveMainPinCoordinates() {
     return {
-      x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_POINTER_COORDINATES.x),
-      y: Math.round(mapPinMain.offsetTop + MAIN_PIN_POINTER_COORDINATES.yCenter)
+      x: Math.round(mapPinMain.offsetLeft + window.const.MAIN_PIN_POINTER_COORDINATES.x),
+      y: Math.round(mapPinMain.offsetTop + window.const.MAIN_PIN_POINTER_COORDINATES.yCenter)
     };
   }
 
@@ -43,8 +26,8 @@
 
   function calculateActiveMainPinCoordinates() {
     return {
-      x: Math.round(mapPinMain.offsetLeft + MAIN_PIN_POINTER_COORDINATES.x),
-      y: Math.round(mapPinMain.offsetTop + MAIN_PIN_POINTER_COORDINATES.y)
+      x: Math.round(mapPinMain.offsetLeft + window.const.MAIN_PIN_POINTER_COORDINATES.x),
+      y: Math.round(mapPinMain.offsetTop + window.const.MAIN_PIN_POINTER_COORDINATES.y)
     };
   }
 
@@ -53,61 +36,14 @@
     addressInput.value = location.x + ', ' + location.y;
   }
 
-  function setActive() {
-    map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
-    fieldsets.forEach(function (item) {
-      item.disabled = false;
-    });
-  }
-
-  function setInactive() {
-    map.classList.add('map--faded');
-    adForm.classList.add('ad-form--disabled');
-    fieldsets.forEach(function (item) {
-      item.disabled = true;
-    });
-  }
-
   function onSuccess(similarAdArray) {
-    mapFirstInteraction = true;
-    setActive();
+    window.control.setActive();
     window.pin.createSimilarAds(similarAdArray);
   }
 
-  function onError(errorMessage) {
-    var errorElement = errorTemplate.cloneNode(true);
-    var errorButton = errorElement.querySelector('.error__button');
-    errorElement.querySelector('.error__message').textContent = errorMessage;
-
-    function errorClose() {
-      main.removeChild(errorElement);
-      document.removeEventListener('keydown', onPopupEscPress);
-    }
-
-    function onPopupEscPress(evt) {
-      window.util.isEscEvent(evt, errorClose);
-    }
-
-    errorButton.addEventListener('click', function (evt) {
-      window.util.isMouseMainButtonEvent(evt, errorClose);
-    });
-
-    errorElement.addEventListener('click', function (evt) {
-      if (evt.target.tagName === 'DIV') {
-        window.util.isMouseMainButtonEvent(evt, errorClose);
-      }
-    });
-
-    document.addEventListener('keydown', onPopupEscPress);
-
-    main.insertAdjacentElement('afterbegin', errorElement);
-
-  }
-
   function setFirstActive() {
-    if (!mapFirstInteraction) {
-      window.backend.loadSimilarAd(onSuccess, onError);
+    if (!window.control.getMapFirstInteraction()) {
+      window.backend.loadSimilarAd(onSuccess, window.control.onError);
     }
   }
 
@@ -177,6 +113,6 @@
     window.util.isEnterEvent(evt, setFirstActive);
   });
 
-  setInactive();
+  window.control.setInactive();
   setInactiveAddress();
 })();
