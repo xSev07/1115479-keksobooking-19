@@ -1,10 +1,12 @@
 'use strict';
 
 (function () {
-  var MIN_PRICE_BUNGALO = 0;
-  var MIN_PRICE_FLAT = 1000;
-  var MIN_PRICE_HOUSE = 5000;
-  var MIN_PRICE_PALACE = 10000;
+  var minPriceMap = {
+    'bungalo': 0,
+    'flat': 1000,
+    'house': 5000,
+    'palace': 10000
+  };
 
   var ERROR_MESSAGE_ONLY_NOT_FOR_GUESTS = 'Для выбранного количества комнат можно выбрать только "не для гостей"';
   var ERROR_MESSAGE_NOT_FOR_GUESTS = 'Выбранное количество комнат не может быть "не для гостей"';
@@ -69,23 +71,7 @@
   }
 
   typeInput.addEventListener('change', function () {
-    var minValue;
-    switch (typeInput.value) {
-      case 'bungalo':
-        minValue = MIN_PRICE_BUNGALO;
-        break;
-      case 'flat':
-        minValue = MIN_PRICE_FLAT;
-        break;
-      case 'house':
-        minValue = MIN_PRICE_HOUSE;
-        break;
-      case 'palace':
-        minValue = MIN_PRICE_PALACE;
-        break;
-      default:
-        throw new Error('Не известный тип жилья ' + typeInput.value);
-    }
+    var minValue = minPriceMap[typeInput.value];
     priceInput.setAttribute('min', minValue);
     priceInput.setAttribute('placeholder', minValue);
   });

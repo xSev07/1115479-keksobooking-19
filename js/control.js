@@ -7,6 +7,7 @@
   var main = document.querySelector('main');
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
+  var filtersForm = document.querySelector('.map__filters');
   var adForm = document.querySelector('.ad-form');
   var fieldsets = document.querySelectorAll('fieldset');
   var addressInput = adForm.querySelector('#address');
@@ -79,6 +80,9 @@
     window.card.closeSimilarAdCard();
     resetMainPin();
     setInactiveAddress();
+
+    console.dir(filtersForm);
+    //заблочить форму
   }
 
   function showMessage(element, elementButton, message) {

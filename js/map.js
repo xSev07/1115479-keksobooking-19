@@ -37,7 +37,9 @@
   }
 
   function onSuccess(similarAdArray) {
+    debugger;
     window.control.setActive();
+    window.control.setSimilarAdArray(similarAdArray);
     window.pin.createSimilarAds(similarAdArray);
   }
 
