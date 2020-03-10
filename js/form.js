@@ -63,6 +63,7 @@
     evt.preventDefault();
     addressInput.removeAttribute('disabled');
     window.backend.saveAd(new FormData(adForm), onSuccess, window.control.onError);
+    addressInput.setAttribute('disabled', 'true');
   }
 
   function onFormReset(evt) {

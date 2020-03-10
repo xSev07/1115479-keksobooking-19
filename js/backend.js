@@ -9,6 +9,15 @@
   var StatusCode = {
     OK: 200
   };
+  var similarAdArray = [];
+
+  function getSimilarAdArray() {
+    return similarAdArray;
+  }
+
+  function setSimilarAdArray(array) {
+    similarAdArray = array;
+  }
 
   function createXHR(onSuccess, onError) {
     var xhr = new XMLHttpRequest();
@@ -49,6 +58,8 @@
 
   window.backend = {
     loadSimilarAd: loadSimilarAd,
+    setSimilarAdArray: setSimilarAdArray,
+    getSimilarAdArray: getSimilarAdArray,
     saveAd: saveAd
   };
 })();

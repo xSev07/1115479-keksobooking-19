@@ -1,19 +1,34 @@
 'use strict';
 
 (function () {
+  var ANY_TYPE = 'any';
   var filtersForm = document.querySelector('.map__filters');
+  // var mapFilters = filtersForm.querySelectorAll('.map__filter');
   var type = filtersForm.querySelector('#housing-type');
 
   type.addEventListener('change', function () {
-    var similarAdArray = window.control.getSimilarAdArray()
-      // .slice()
-      .filter(function (element) {
-        console.log(element.offer.type, type.value, element.offer.type === type.value);
-        if (element.offer.type === type.value) console.dir(element);
+    var similarAds = window.backend.getSimilarAdArray()
+    .filter(function (element) {
+      // return type.value !== ANY_TYPE ? element.offer.type === type.value : true;
+      //
+      // ////////////
+      //
+      // var result = true;
+      // if (type.value !== ANY_TYPE) {
+      //   result = element.offer.type === type.value;
+      // }
+      // return result;
+      //
+      // ////////
+      if (type.value !== ANY_TYPE) {
         return element.offer.type === type.value;
-      });
+      } else {
+        return true;
+      }
+    });
     window.card.closeSimilarAdCard();
     window.pin.deleteSimilarAds();
-    window.pin.createSimilarAds(similarAdArray);
+    window.control.setDisplayedSimilarAd(similarAds);
+    window.pin.createSimilarAds();
   });
 })();
