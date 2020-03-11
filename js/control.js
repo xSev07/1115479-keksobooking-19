@@ -95,6 +95,13 @@
     setInactiveAddress();
   }
 
+  function redrawPins(similarAds) {
+    window.card.closeSimilarAdCard();
+    window.pin.deleteSimilarAds();
+    setDisplayedSimilarAd(similarAds);
+    window.pin.createSimilarAds();
+  }
+
   function showMessage(element, elementButton, message) {
     if (message) {
       element.querySelector('p[class$="__message"]').textContent = message;
@@ -139,6 +146,7 @@
     getMapFirstInteraction: getMapFirstInteraction,
     getDisplayedSimilarAd: getDisplayedSimilarAd,
     setDisplayedSimilarAd: setDisplayedSimilarAd,
+    redrawPins: redrawPins,
     onError: onError,
     showMessage: showMessage
   };
