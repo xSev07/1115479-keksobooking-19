@@ -8,10 +8,28 @@
   var price = filtersForm.querySelector('#housing-price');
   var rooms = filtersForm.querySelector('#housing-rooms');
   var guests = filtersForm.querySelector('#housing-guests');
+  var features = filtersForm.querySelector('#housing-features');
 
   function compare(selectedValue, offerValue) {
     return selectedValue === ANY_TYPE ? true : selectedValue === offerValue;
   }
+  
+
+  filtersForm.addEventListener('change', function (evt) {
+    console.dir(evt.target);
+    console.log(evt.target.name);
+    console.log(evt.target.value);
+    switch (evt.target.name) {
+      case 'features':
+        console.log(evt.target.checked);
+        break;
+      case 'housing-price':
+        console.log(evt.target.value);
+        break;
+      default:
+        console.log(evt.target.value);
+    }
+  });
 
   type.addEventListener('change', function () {
     var similarAds = window.backend.getSimilarAdArray()
@@ -56,4 +74,13 @@
       });
     window.control.redrawPins(similarAds);
   });
+
+  features.addEventListener('change', function (evt) {
+    var similarAds = window.backend.getSimilarAdArray()
+      .filter(function (element) {
+        return evt.target.checked ? element.offer.features.indexOf(evt.target.value) !== -1 : true;
+      });
+    window.control.redrawPins(similarAds);
+  });
+
 })();
