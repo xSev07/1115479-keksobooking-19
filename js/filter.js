@@ -9,22 +9,7 @@
   type.addEventListener('change', function () {
     var similarAds = window.backend.getSimilarAdArray()
     .filter(function (element) {
-      // return type.value !== ANY_TYPE ? element.offer.type === type.value : true;
-      //
-      // ////////////
-      //
-      // var result = true;
-      // if (type.value !== ANY_TYPE) {
-      //   result = element.offer.type === type.value;
-      // }
-      // return result;
-      //
-      // ////////
-      if (type.value !== ANY_TYPE) {
-        return element.offer.type === type.value;
-      } else {
-        return true;
-      }
+      return type.value === ANY_TYPE ? true : element.offer.type === type.value;
     });
     window.card.closeSimilarAdCard();
     window.pin.deleteSimilarAds();

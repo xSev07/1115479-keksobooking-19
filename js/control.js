@@ -9,8 +9,9 @@
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
   var filtersForm = document.querySelector('.map__filters');
+  var filters = Array.from(filtersForm.children);
   var adForm = document.querySelector('.ad-form');
-  var fieldsets = document.querySelectorAll('fieldset');
+  var fieldsets = Array.from(document.querySelectorAll('fieldset'));
   var addressInput = adForm.querySelector('#address');
   var errorTemplate = document.querySelector('#error')
     .content
@@ -60,16 +61,13 @@
   }
 
   function setArrayAvailability(array, value) {
-    // for (var element of array) {
-    //   element.disabled = value;
-    // }
     array.forEach(function (element) {
       element.disabled = value;
     });
   }
 
   function setActiveFilters() {
-    setArrayAvailability(filtersForm.children, false);
+    setArrayAvailability(filters, false);
   }
 
   function setInactiveAddress() {
@@ -88,7 +86,7 @@
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
     setArrayAvailability(fieldsets, true);
-    setArrayAvailability(filtersForm.children, true);
+    setArrayAvailability(filters, true);
     mapFirstInteraction = false;
     adForm.reset();
     window.pin.deleteSimilarAds();
