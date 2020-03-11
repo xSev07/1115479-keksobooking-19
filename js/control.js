@@ -3,10 +3,12 @@
 (function () {
   var MAIN_PIN_START_X = 570;
   var MAIN_PIN_START_Y = 375;
+  var MAX_DISPLAYED_AD = 5;
 
   var main = document.querySelector('main');
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
+  var filtersForm = document.querySelector('.map__filters');
   var adForm = document.querySelector('.ad-form');
   var fieldsets = document.querySelectorAll('fieldset');
   var addressInput = adForm.querySelector('#address');
@@ -14,15 +16,19 @@
     .content
     .querySelector('.error');
 
-  var similarAdArray = [];
+  var displayedSimilarAd = [];
   var mapFirstInteraction = false;
 
-  function getSimilarAdArray() {
-    return similarAdArray;
+  function getDisplayedSimilarAd() {
+    return displayedSimilarAd;
   }
 
-  function setSimilarAdArray(array) {
-    similarAdArray = array;
+  function setDisplayedSimilarAd(array) {
+    displayedSimilarAd = [];
+    var displayedAd = Math.min(array.length, MAX_DISPLAYED_AD);
+    for (var i = 0; i < displayedAd; i++) {
+      displayedSimilarAd.push(array[i]);
+    }
   }
 
   function getMapFirstInteraction() {
@@ -53,6 +59,19 @@
     }
   }
 
+  function setArrayAvailability(array, value) {
+    // for (var element of array) {
+    //   element.disabled = value;
+    // }
+    array.forEach(function (element) {
+      element.disabled = value;
+    });
+  }
+
+  function setActiveFilters() {
+    setArrayAvailability(filtersForm.children, false);
+  }
+
   function setInactiveAddress() {
     var location = calculateInactiveMainPinCoordinates();
     addressInput.value = location.x + ', ' + location.y;
@@ -61,18 +80,15 @@
   function setActive() {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    fieldsets.forEach(function (item) {
-      item.disabled = false;
-    });
+    setArrayAvailability(fieldsets, false);
     mapFirstInteraction = true;
   }
 
   function setInactive() {
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
-    fieldsets.forEach(function (item) {
-      item.disabled = true;
-    });
+    setArrayAvailability(fieldsets, true);
+    setArrayAvailability(filtersForm.children, true);
     mapFirstInteraction = false;
     adForm.reset();
     window.pin.deleteSimilarAds();
@@ -121,9 +137,10 @@
   window.control = {
     setActive: setActive,
     setInactive: setInactive,
+    setActiveFilters: setActiveFilters,
     getMapFirstInteraction: getMapFirstInteraction,
-    getSimilarAdArray: getSimilarAdArray,
-    setSimilarAdArray: setSimilarAdArray,
+    getDisplayedSimilarAd: getDisplayedSimilarAd,
+    setDisplayedSimilarAd: setDisplayedSimilarAd,
     onError: onError,
     showMessage: showMessage
   };

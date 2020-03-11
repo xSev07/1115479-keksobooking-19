@@ -37,12 +37,15 @@
   }
 
   function onSuccess(similarAdArray) {
-    window.control.setActive();
+    window.backend.setSimilarAdArray(similarAdArray);
+    window.control.setDisplayedSimilarAd(similarAdArray);
     window.pin.createSimilarAds(similarAdArray);
+    window.control.setActiveFilters();
   }
 
   function setFirstActive() {
     if (!window.control.getMapFirstInteraction()) {
+      window.control.setActive();
       window.backend.loadSimilarAd(onSuccess, window.control.onError);
     }
   }

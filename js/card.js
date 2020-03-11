@@ -56,7 +56,7 @@
   }
 
   function renderCard(adIndex) {
-    var similarAdArray = window.control.getSimilarAdArray();
+    var similarAdArray = window.control.getDisplayedSimilarAd();
     var ad = similarAdArray[adIndex];
     var cardElement = cardTemplate.cloneNode(true);
     cardElement.querySelector('.popup__title').textContent = ad.offer.title;

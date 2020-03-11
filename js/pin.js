@@ -35,14 +35,13 @@
     return fragment;
   }
 
-  function createSimilarAds(similarAdArray) {
-    window.control.setSimilarAdArray(similarAdArray);
+  function createSimilarAds() {
+    var similarAdArray = window.control.getDisplayedSimilarAd();
     var fragment = createSimilarAdFragment(similarAdArray);
     mapPins.appendChild(fragment);
   }
 
   function deleteSimilarAds() {
-    window.control.setSimilarAdArray([]);
     var pins = mapPins.querySelectorAll('.map__pin');
     for (var i = 0; i < pins.length; i++) {
       if (pins[i].classList.contains('map__pin--main')) {
