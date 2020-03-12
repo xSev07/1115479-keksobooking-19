@@ -17,15 +17,12 @@
     switch (price.value) {
       case 'low':
         return offerValue < 10000;
-      break;
       case 'middle':
         return offerValue >= 10000 && offerValue < 50000;
-      break;
       case 'high':
         return offerValue >= 50000;
-      break;
-    default:
-      return true;
+      default:
+        return true;
     }
   }
 
@@ -40,7 +37,7 @@
     return result;
   }
 
-  function filterAd(){
+  function filterAd() {
     var filteredAds = window.backend.getSimilarAdArray()
       .filter(function (element) {
         return compareFields(type.value, element.offer.type)
