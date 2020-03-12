@@ -5,19 +5,20 @@
   var MAIN_PIN_START_Y = 375;
   var MAX_DISPLAYED_AD = 5;
 
+  var displayedSimilarAd = [];
+  var mapFirstInteraction = false;
+
   var main = document.querySelector('main');
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
   var filtersForm = document.querySelector('.map__filters');
+  var filters = Array.from(filtersForm.children);
   var adForm = document.querySelector('.ad-form');
-  var fieldsets = document.querySelectorAll('fieldset');
+  var fieldsets = Array.from(document.querySelectorAll('fieldset'));
   var addressInput = adForm.querySelector('#address');
   var errorTemplate = document.querySelector('#error')
     .content
     .querySelector('.error');
-
-  var displayedSimilarAd = [];
-  var mapFirstInteraction = false;
 
   function getDisplayedSimilarAd() {
     return displayedSimilarAd;
@@ -59,17 +60,18 @@
     }
   }
 
-  function setArrayAvailability(array, value) {
-    // for (var element of array) {
-    //   element.disabled = value;
-    // }
+  function setArrayDisabled(array, value) {
     array.forEach(function (element) {
       element.disabled = value;
     });
   }
 
   function setActiveFilters() {
-    setArrayAvailability(filtersForm.children, false);
+    setArrayDisabled(filters, false);
+  }
+
+  function setInactiveFilters() {
+    setArrayDisabled(filters, true);
   }
 
   function setInactiveAddress() {
@@ -80,21 +82,23 @@
   function setActive() {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    setArrayAvailability(fieldsets, false);
+    setArrayDisabled(fieldsets, false);
     mapFirstInteraction = true;
   }
 
   function setInactive() {
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
-    setArrayAvailability(fieldsets, true);
-    setArrayAvailability(filtersForm.children, true);
+    setArrayDisabled(fieldsets, true);
+    setArrayDisabled(filters, true);
     mapFirstInteraction = false;
     adForm.reset();
+    filtersForm.reset();
     window.pin.deleteSimilarAds();
     window.card.closeSimilarAdCard();
     resetMainPin();
     setInactiveAddress();
+    setInactiveFilters();
   }
 
   function showMessage(element, elementButton, message) {

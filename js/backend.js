@@ -9,6 +9,7 @@
   var StatusCode = {
     OK: 200
   };
+
   var similarAdArray = [];
 
   function getSimilarAdArray() {
