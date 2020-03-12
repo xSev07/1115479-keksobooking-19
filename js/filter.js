@@ -3,84 +3,55 @@
 (function () {
   var ANY_TYPE = 'any';
   var filtersForm = document.querySelector('.map__filters');
-  // var mapFilters = filtersForm.querySelectorAll('.map__filter');
   var type = filtersForm.querySelector('#housing-type');
   var price = filtersForm.querySelector('#housing-price');
   var rooms = filtersForm.querySelector('#housing-rooms');
   var guests = filtersForm.querySelector('#housing-guests');
-  var features = filtersForm.querySelector('#housing-features');
+  var features = filtersForm.querySelectorAll('.map__checkbox');
 
-  function compare(selectedValue, offerValue) {
+  function compareFields(selectedValue, offerValue) {
     return selectedValue === ANY_TYPE ? true : selectedValue === offerValue;
   }
-  
 
-  filtersForm.addEventListener('change', function (evt) {
-    console.dir(evt.target);
-    console.log(evt.target.name);
-    console.log(evt.target.value);
-    switch (evt.target.name) {
-      case 'features':
-        console.log(evt.target.checked);
-        break;
-      case 'housing-price':
-        console.log(evt.target.value);
-        break;
-      default:
-        console.log(evt.target.value);
+  function comparePrice(offerValue) {
+    switch (price.value) {
+      case 'low':
+        return offerValue < 10000;
+      break;
+      case 'middle':
+        return offerValue >= 10000 && offerValue < 50000;
+      break;
+      case 'high':
+        return offerValue >= 50000;
+      break;
+    default:
+      return true;
     }
-  });
+  }
 
-  type.addEventListener('change', function () {
-    var similarAds = window.backend.getSimilarAdArray()
+  function compareFeatures(elementFeatures) {
+    var result = true;
+    for (var i = 0; i < features.length; i++) {
+      result = features[i].checked ? elementFeatures.indexOf(features[i].value) !== -1 : true;
+      if (!result) {
+        break;
+      }
+    }
+    return result;
+  }
+
+  function filterAd(){
+    var filteredAds = window.backend.getSimilarAdArray()
       .filter(function (element) {
-        return compare(type.value, element.offer.type);
+        return compareFields(type.value, element.offer.type)
+          && compareFields(rooms.value, element.offer.rooms.toString())
+          && compareFields(guests.value, element.offer.guests.toString())
+          && comparePrice(element.offer.price)
+          && compareFeatures(element.offer.features);
       });
-    window.control.redrawPins(similarAds);
-  });
+    window.control.redrawPins(filteredAds);
+  }
 
-  price.addEventListener('change', function () {
-    var similarAds = window.backend.getSimilarAdArray()
-      .filter(function (element) {
-        switch (price.value) {
-          case 'low':
-            return element.offer.price < 10000;
-          break;
-          case 'middle':
-            return element.offer.price >= 10000 && element.offer.price < 50000;
-          break;
-          case 'high':
-            return element.offer.price >= 50000;
-          break;
-        default:
-          return true;
-        }
-      });
-    window.control.redrawPins(similarAds);
-  });
 
-  rooms.addEventListener('change', function () {
-    var similarAds = window.backend.getSimilarAdArray()
-      .filter(function (element) {
-        return compare(rooms.value, element.offer.rooms.toString());
-      });
-    window.control.redrawPins(similarAds);
-  });
-
-  guests.addEventListener('change', function () {
-    var similarAds = window.backend.getSimilarAdArray()
-      .filter(function (element) {
-        return compare(guests.value, element.offer.guests.toString());
-      });
-    window.control.redrawPins(similarAds);
-  });
-
-  features.addEventListener('change', function (evt) {
-    var similarAds = window.backend.getSimilarAdArray()
-      .filter(function (element) {
-        return evt.target.checked ? element.offer.features.indexOf(evt.target.value) !== -1 : true;
-      });
-    window.control.redrawPins(similarAds);
-  });
-
+  filtersForm.addEventListener('change', filterAd);
 })();
