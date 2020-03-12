@@ -25,11 +25,11 @@
       feature.classList.remove('popup__feature--wifi');
       features.innerHTML = '';
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < ad.offer.features.length; i++) {
+      ad.offer.features.forEach(function (element) {
         var featureElement = feature.cloneNode();
-        featureElement.classList.add(getFeatureClass(ad.offer.features[i]));
+        featureElement.classList.add(getFeatureClass(element));
         fragment.appendChild(featureElement);
-      }
+      });
       features.appendChild(fragment);
     }
   }
@@ -42,11 +42,11 @@
       var photo = cardElement.querySelector('.popup__photo');
       photos.innerHTML = '';
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < ad.offer.photos.length; i++) {
+      ad.offer.photos.forEach(function (element) {
         var photoElement = photo.cloneNode();
-        photoElement.src = ad.offer.photos[i];
+        photoElement.src = element;
         fragment.appendChild(photoElement);
-      }
+      });
       photos.appendChild(fragment);
     }
   }

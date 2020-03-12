@@ -7,6 +7,12 @@
     'house': 5000,
     'palace': 10000
   };
+  var RoomCapacity = {
+    ONE: 1,
+    TWO: 2,
+    THREE: 3,
+    HUNDRED: 100
+  };
   var ErrorMessage = {
     ONLY_NOT_FOR_GUESTS: 'Для выбранного количества комнат можно выбрать только "не для гостей"',
     NOT_FOR_GUESTS: 'Выбранное количество комнат не может быть "не для гостей"',
@@ -32,14 +38,14 @@
     var selectedCapacity = parseInt(capacityInput.value, 10);
     var errorMessage = '';
     switch (selectedRooms) {
-      case 100:
+      case RoomCapacity.HUNDRED:
         if (selectedCapacity > 0) {
           errorMessage = ErrorMessage.ONLY_NOT_FOR_GUESTS;
         }
         break;
-      case 1:
-      case 2:
-      case 3:
+      case RoomCapacity.ONE:
+      case RoomCapacity.TWO:
+      case RoomCapacity.THREE:
       default:
         if (selectedCapacity === 0) {
           errorMessage = ErrorMessage.NOT_FOR_GUESTS;
@@ -95,5 +101,5 @@
     window.util.isMouseMainButtonEvent(evt, onFormReset);
   });
 
-  priceInput.setAttribute('min', '5000');
+  priceInput.setAttribute('min', minPriceMap[typeInput.value]);
 })();

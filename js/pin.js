@@ -29,9 +29,9 @@
 
   function createSimilarAdFragment(ads) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < ads.length; i++) {
-      fragment.appendChild(renderAd(ads[i], i));
-    }
+    ads.forEach(function (element, i) {
+      fragment.appendChild(renderAd(element, i));
+    });
     return fragment;
   }
 
@@ -42,13 +42,12 @@
   }
 
   function deleteSimilarAds() {
-    var pins = mapPins.querySelectorAll('.map__pin');
-    for (var i = 0; i < pins.length; i++) {
-      if (pins[i].classList.contains('map__pin--main')) {
-        continue;
+    var pins = Array.from(mapPins.querySelectorAll('.map__pin'));
+    pins.forEach(function (element) {
+      if (!element.classList.contains('map__pin--main')) {
+        mapPins.removeChild(element);
       }
-      mapPins.removeChild(pins[i]);
-    }
+    });
   }
 
   function redrawPins(similarAds) {
