@@ -2,6 +2,11 @@
 
 (function () {
   var ANY_TYPE = 'any';
+  var PriceType = {
+    LOW: 'low',
+    MIDDLE: 'middle',
+    HIGH: 'high'
+  };
   var filtersForm = document.querySelector('.map__filters');
   var type = filtersForm.querySelector('#housing-type');
   var price = filtersForm.querySelector('#housing-price');
@@ -15,11 +20,11 @@
 
   function comparePrice(offerValue) {
     switch (price.value) {
-      case 'low':
+      case PriceType.LOW:
         return offerValue < 10000;
-      case 'middle':
+      case PriceType.MIDDLE:
         return offerValue >= 10000 && offerValue < 50000;
-      case 'high':
+      case PriceType.HIGH:
         return offerValue >= 50000;
       default:
         return true;

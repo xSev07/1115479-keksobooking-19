@@ -8,9 +8,11 @@
     'palace': 10000
   };
 
-  var ERROR_MESSAGE_ONLY_NOT_FOR_GUESTS = 'Для выбранного количества комнат можно выбрать только "не для гостей"';
-  var ERROR_MESSAGE_NOT_FOR_GUESTS = 'Выбранное количество комнат не может быть "не для гостей"';
-  var ERROR_MESSAGE_TOO_MANY_GUESTS = 'Количество гостей не может быть больше количества комнат';
+  var ErrorMessage = {
+    ONLY_NOT_FOR_GUESTS: 'Для выбранного количества комнат можно выбрать только "не для гостей"',
+    NOT_FOR_GUESTS: 'Выбранное количество комнат не может быть "не для гостей"',
+    TOO_MANY_GUESTS: 'Количество гостей не может быть больше количества комнат'
+  };
 
   var adForm = document.querySelector('.ad-form');
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
@@ -33,7 +35,7 @@
     switch (selectedRooms) {
       case 100:
         if (selectedCapacity > 0) {
-          errorMessage = ERROR_MESSAGE_ONLY_NOT_FOR_GUESTS;
+          errorMessage = ErrorMessage.ONLY_NOT_FOR_GUESTS;
         }
         break;
       case 1:
@@ -41,9 +43,9 @@
       case 3:
       default:
         if (selectedCapacity === 0) {
-          errorMessage = ERROR_MESSAGE_NOT_FOR_GUESTS;
+          errorMessage = ErrorMessage.NOT_FOR_GUESTS;
         } else if (selectedRooms < selectedCapacity) {
-          errorMessage = ERROR_MESSAGE_TOO_MANY_GUESTS;
+          errorMessage = ErrorMessage.TOO_MANY_GUESTS;
         }
     }
     capacityInput.setCustomValidity(errorMessage);

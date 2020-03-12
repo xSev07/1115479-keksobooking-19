@@ -1,11 +1,11 @@
 'use strict';
 
 (function () {
-  var MAP_BORDER = {
-    top: window.const.MAP_START_Y - window.const.MAIN_PIN_POINTER_COORDINATES.y,
-    right: window.const.MAP_FINISH_X - window.const.MAIN_PIN_POINTER_COORDINATES.x,
-    bottom: window.const.MAP_FINISH_Y - window.const.MAIN_PIN_POINTER_COORDINATES.y,
-    left: window.const.MAP_START_X - window.const.MAIN_PIN_POINTER_COORDINATES.x
+  var MapBorder = {
+    TOP: window.const.MAP_START_Y - window.const.MAIN_PIN_POINTER_COORDINATES.y,
+    RIGHT: window.const.MAP_FINISH_X - window.const.MAIN_PIN_POINTER_COORDINATES.x,
+    BOTTOM: window.const.MAP_FINISH_Y - window.const.MAIN_PIN_POINTER_COORDINATES.y,
+    LEFT: window.const.MAP_START_X - window.const.MAIN_PIN_POINTER_COORDINATES.x
   };
 
   var map = document.querySelector('.map');
@@ -51,11 +51,11 @@
   }
 
   function checkMapBorder(position, axis) {
-    var checkedPosition = axis === 'x' ? MAP_BORDER.left : MAP_BORDER.top;
+    var checkedPosition = axis === 'x' ? MapBorder.LEFT : MapBorder.TOP;
     if (position < checkedPosition) {
       position = checkedPosition;
     }
-    checkedPosition = axis === 'x' ? MAP_BORDER.right : MAP_BORDER.bottom;
+    checkedPosition = axis === 'x' ? MapBorder.RIGHT : MapBorder.BOTTOM;
     if (position > checkedPosition) {
       position = checkedPosition;
     }
