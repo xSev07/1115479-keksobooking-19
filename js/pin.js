@@ -51,8 +51,16 @@
     }
   }
 
+  function redrawPins(similarAds) {
+    window.card.closeSimilarAdCard();
+    deleteSimilarAds();
+    window.control.setDisplayedSimilarAd(similarAds);
+    createSimilarAds();
+  }
+
   window.pin = {
     createSimilarAds: createSimilarAds,
-    deleteSimilarAds: deleteSimilarAds
+    deleteSimilarAds: deleteSimilarAds,
+    redrawPins: redrawPins
   };
 })();

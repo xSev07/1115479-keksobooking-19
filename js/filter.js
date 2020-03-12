@@ -46,9 +46,10 @@
           && comparePrice(element.offer.price)
           && compareFeatures(element.offer.features);
       });
-    window.control.redrawPins(filteredAds);
+    window.pin.redrawPins(filteredAds);
   }
 
-
-  filtersForm.addEventListener('change', filterAd);
+  filtersForm.addEventListener('change', function () {
+    window.debounce(filterAd);
+  });
 })();
