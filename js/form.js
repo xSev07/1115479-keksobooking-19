@@ -7,7 +7,6 @@
     'house': 5000,
     'palace': 10000
   };
-
   var ErrorMessage = {
     ONLY_NOT_FOR_GUESTS: 'Для выбранного количества комнат можно выбрать только "не для гостей"',
     NOT_FOR_GUESTS: 'Выбранное количество комнат не может быть "не для гостей"',
@@ -95,4 +94,6 @@
   adFormReset.addEventListener('click', function (evt) {
     window.util.isMouseMainButtonEvent(evt, onFormReset);
   });
+
+  priceInput.setAttribute('min', '5000');
 })();

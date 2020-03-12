@@ -7,6 +7,11 @@
     MIDDLE: 'middle',
     HIGH: 'high'
   };
+  var PriceValues = {
+    LOW: 10000,
+    HIGH: 50000
+  };
+
   var filtersForm = document.querySelector('.map__filters');
   var type = filtersForm.querySelector('#housing-type');
   var price = filtersForm.querySelector('#housing-price');
@@ -21,11 +26,11 @@
   function comparePrice(offerValue) {
     switch (price.value) {
       case PriceType.LOW:
-        return offerValue < 10000;
+        return offerValue < PriceValues.LOW;
       case PriceType.MIDDLE:
-        return offerValue >= 10000 && offerValue < 50000;
+        return offerValue >= PriceValues.LOW && offerValue < PriceValues.HIGH;
       case PriceType.HIGH:
-        return offerValue >= 50000;
+        return offerValue >= PriceValues.HIGH;
       default:
         return true;
     }

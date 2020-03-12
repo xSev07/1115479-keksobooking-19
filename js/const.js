@@ -1,10 +1,9 @@
 'use strict';
 
 (function () {
-  var map = document.querySelector('.map');
   var COUNT_SIMILAR_AD = 8;
   var MAP_START_X = 0;
-  var MAP_FINISH_X = map.clientWidth;
+  var MAP_FINISH_X = document.querySelector('.map').clientWidth;
   var MAP_START_Y = 130;
   var MAP_FINISH_Y = 630;
   var MAIN_PIN_WIDTH = 65;

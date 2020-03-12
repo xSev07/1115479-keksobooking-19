@@ -5,6 +5,9 @@
   var MAIN_PIN_START_Y = 375;
   var MAX_DISPLAYED_AD = 5;
 
+  var displayedSimilarAd = [];
+  var mapFirstInteraction = false;
+
   var main = document.querySelector('main');
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
@@ -16,9 +19,6 @@
   var errorTemplate = document.querySelector('#error')
     .content
     .querySelector('.error');
-
-  var displayedSimilarAd = [];
-  var mapFirstInteraction = false;
 
   function getDisplayedSimilarAd() {
     return displayedSimilarAd;
