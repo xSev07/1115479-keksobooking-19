@@ -60,14 +60,18 @@
     }
   }
 
-  function setArrayAvailability(array, value) {
+  function setArrayDisabled(array, value) {
     array.forEach(function (element) {
       element.disabled = value;
     });
   }
 
   function setActiveFilters() {
-    setArrayAvailability(filters, false);
+    setArrayDisabled(filters, false);
+  }
+
+  function setInactiveFilters() {
+    setArrayDisabled(filters, true);
   }
 
   function setInactiveAddress() {
@@ -78,21 +82,23 @@
   function setActive() {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    setArrayAvailability(fieldsets, false);
+    setArrayDisabled(fieldsets, false);
     mapFirstInteraction = true;
   }
 
   function setInactive() {
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
-    setArrayAvailability(fieldsets, true);
-    setArrayAvailability(filters, true);
+    setArrayDisabled(fieldsets, true);
+    setArrayDisabled(filters, true);
     mapFirstInteraction = false;
     adForm.reset();
+    filtersForm.reset();
     window.pin.deleteSimilarAds();
     window.card.closeSimilarAdCard();
     resetMainPin();
     setInactiveAddress();
+    setInactiveFilters();
   }
 
   function redrawPins(similarAds) {
