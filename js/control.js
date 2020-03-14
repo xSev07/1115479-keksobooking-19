@@ -110,6 +110,7 @@
     setInactiveAddress();
     setDisabledFilters(true);
     setMinPrice();
+    window.photo.setDefaultImages();
   }
 
   function showMessage(element, elementButton, message) {
