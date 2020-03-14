@@ -38,9 +38,9 @@
 
   function onSuccess(similarAdArray) {
     window.backend.setSimilarAdArray(similarAdArray);
-    window.control.setDisplayedSimilarAd(similarAdArray);
+    window.control.setDisplayedSimilarAds(similarAdArray);
     window.pin.createSimilarAds(similarAdArray);
-    window.control.setActiveFilters();
+    window.control.setDisabledFilters(false);
   }
 
   function setFirstActive() {

@@ -36,7 +36,7 @@
   }
 
   function createSimilarAds() {
-    var similarAdArray = window.control.getDisplayedSimilarAd();
+    var similarAdArray = window.control.getDisplayedSimilarAds();
     var fragment = createSimilarAdFragment(similarAdArray);
     mapPins.appendChild(fragment);
   }
@@ -53,7 +53,7 @@
   function redrawPins(similarAds) {
     window.card.closeSimilarAdCard();
     deleteSimilarAds();
-    window.control.setDisplayedSimilarAd(similarAds);
+    window.control.setDisplayedSimilarAds(similarAds);
     createSimilarAds();
   }
 

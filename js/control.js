@@ -5,7 +5,13 @@
   var MAIN_PIN_START_Y = 375;
   var MAX_DISPLAYED_AD = 5;
 
-  var displayedSimilarAd = [];
+  var minPriceMap = {
+    'bungalo': 0,
+    'flat': 1000,
+    'house': 5000,
+    'palace': 10000
+  };
+  var displayedSimilarAds = [];
   var mapFirstInteraction = false;
 
   var main = document.querySelector('main');
@@ -16,19 +22,21 @@
   var adForm = document.querySelector('.ad-form');
   var fieldsets = Array.from(document.querySelectorAll('fieldset'));
   var addressInput = adForm.querySelector('#address');
+  var priceInput = adForm.querySelector('#price');
+  var typeInput = adForm.querySelector('#type');
   var errorTemplate = document.querySelector('#error')
     .content
     .querySelector('.error');
 
-  function getDisplayedSimilarAd() {
-    return displayedSimilarAd;
+  function getDisplayedSimilarAds() {
+    return displayedSimilarAds;
   }
 
-  function setDisplayedSimilarAd(array) {
-    displayedSimilarAd = [];
+  function setDisplayedSimilarAds(array) {
+    displayedSimilarAds = [];
     var displayedAd = Math.min(array.length, MAX_DISPLAYED_AD);
     for (var i = 0; i < displayedAd; i++) {
-      displayedSimilarAd.push(array[i]);
+      displayedSimilarAds.push(array[i]);
     }
   }
 
@@ -66,12 +74,8 @@
     });
   }
 
-  function setActiveFilters() {
-    setArrayDisabled(filters, false);
-  }
-
-  function setInactiveFilters() {
-    setArrayDisabled(filters, true);
+  function setDisabledFilters(value) {
+    setArrayDisabled(filters, value);
   }
 
   function setInactiveAddress() {
@@ -86,6 +90,12 @@
     mapFirstInteraction = true;
   }
 
+  function setMinPrice() {
+    var minValue = minPriceMap[typeInput.value];
+    priceInput.setAttribute('min', minValue);
+    priceInput.setAttribute('placeholder', minValue);
+  }
+
   function setInactive() {
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
@@ -98,7 +108,8 @@
     window.card.closeSimilarAdCard();
     resetMainPin();
     setInactiveAddress();
-    setInactiveFilters();
+    setDisabledFilters(true);
+    setMinPrice();
   }
 
   function showMessage(element, elementButton, message) {
@@ -141,10 +152,11 @@
   window.control = {
     setActive: setActive,
     setInactive: setInactive,
-    setActiveFilters: setActiveFilters,
+    setDisabledFilters: setDisabledFilters,
     getMapFirstInteraction: getMapFirstInteraction,
-    getDisplayedSimilarAd: getDisplayedSimilarAd,
-    setDisplayedSimilarAd: setDisplayedSimilarAd,
+    getDisplayedSimilarAds: getDisplayedSimilarAds,
+    setDisplayedSimilarAds: setDisplayedSimilarAds,
+    setMinPrice: setMinPrice,
     onError: onError,
     showMessage: showMessage
   };
