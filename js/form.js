@@ -1,12 +1,6 @@
 'use strict';
 
 (function () {
-  var minPriceMap = {
-    'bungalo': 0,
-    'flat': 1000,
-    'house': 5000,
-    'palace': 10000
-  };
   var RoomCapacity = {
     ONE: 1,
     TWO: 2,
@@ -26,7 +20,6 @@
   var roomNumberInput = adForm.querySelector('#room_number');
   var capacityInput = adForm.querySelector('#capacity');
   var typeInput = adForm.querySelector('#type');
-  var priceInput = adForm.querySelector('#price');
   var timeInInput = adForm.querySelector('#timein');
   var timeOutInput = adForm.querySelector('#timeout');
   var successTemplate = document.querySelector('#success')
@@ -56,7 +49,7 @@
     capacityInput.setCustomValidity(errorMessage);
   }
 
-  function formValidation() {
+  function validateForm() {
     validateRoomsAndCapacity();
   }
 
@@ -79,9 +72,7 @@
   }
 
   typeInput.addEventListener('change', function () {
-    var minValue = minPriceMap[typeInput.value];
-    priceInput.setAttribute('min', minValue);
-    priceInput.setAttribute('placeholder', minValue);
+    window.control.setMinPrice();
   });
 
   timeInInput.addEventListener('change', function () {
@@ -93,13 +84,11 @@
   });
 
   adFormSubmit.addEventListener('click', function () {
-    formValidation();
+    validateForm();
   });
 
   adForm.addEventListener('submit', onFormSubmit);
   adFormReset.addEventListener('click', function (evt) {
     window.util.isMouseMainButtonEvent(evt, onFormReset);
   });
-
-  priceInput.setAttribute('min', minPriceMap[typeInput.value]);
 })();

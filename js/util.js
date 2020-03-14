@@ -7,7 +7,7 @@
   var TAG_INPUT = 'INPUT';
 
   function isEscEvent(evt, action) {
-    if (evt.key === ESC_KEY & evt.target.tagName !== TAG_INPUT) {
+    if (evt.key === ESC_KEY && evt.target.tagName !== TAG_INPUT) {
       action(evt);
     }
   }

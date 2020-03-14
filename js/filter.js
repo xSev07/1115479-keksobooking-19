@@ -48,7 +48,7 @@
   }
 
   function filterAd() {
-    var filteredAds = window.backend.getSimilarAdArray()
+    var filteredAds = window.backend.getSimilarAdsArray()
       .filter(function (element) {
         return compareFields(type.value, element.offer.type)
           && compareFields(rooms.value, element.offer.rooms.toString())
